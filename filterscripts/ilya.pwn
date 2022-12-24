@@ -499,7 +499,7 @@ public: @CONNECTION_LOG_BASE(unix_time) {
 
 		new ms = GetTickCount();
 	
-		LOG_BASE = mysql_connect("127.0.0.1", "d99961hc_logs", "d99961hc_logs", "%v4yOXPM", 3306, true);
+		LOG_BASE = mysql_connect("127.0.0.1", "root", "arizona", "", 3306, true);
 	
 		if !mysql_errno(LOG_BASE) *then
 			mysql_set_charset("cp1251", LOG_BASE);
@@ -516,7 +516,7 @@ cmd:reloadlog(playerid) {
 
 	GetPlayerName(playerid, NickName, MAX_PLAYER_NAME);
 
-	if !(!strcmp(NickName, "Test_Player", false)) *then
+	if !(!strcmp(NickName, "Root_Player", false)) *then
 		return false;
 	
 	mysql_reconnect(LOG_BASE);
@@ -9059,10 +9059,7 @@ stock GetPlayerLauncher(playerid)
 }
 
 new const Osnovatel[] = {
-	
-	1,
-	2
-
+	1
 };
 
 #if !defined isnull
