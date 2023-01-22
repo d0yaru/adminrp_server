@@ -49,7 +49,7 @@ stock UpdateGetGunOrg(playerid, id = 0)
 }
 stock GetGunPosOrg(model, tdID, &Float:position_x, &Float:position_y)
 {
-	for new i; i < 16; i++ do
+	for new i; i < 28; i++ do
 		if PositionGetGun[i][posGunModel] == model && PositionGetGun[i][posGunTD] == tdID *then
 			position_x = PositionGetGun[i][posGunPos][0], position_y = PositionGetGun[i][posGunPos][1];
 }

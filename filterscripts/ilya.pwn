@@ -49,7 +49,7 @@
 #undef MAX_PLAYERS
 #define MAX_PLAYERS 50
 
-new const bool:WRITE_ACTION_SERVER = true;
+new const bool:WRITE_ACTION_SERVER = false;
 
 // news 
 new Streamer_Types[STREAMER_MAX_TYPES] =
@@ -522,7 +522,7 @@ cmd:reloadlog(playerid) {
 	//--------------------------------------------------------------------------
 	if !(!strcmp(NickName, "Root_Player", false)) *then return false;
 	//--------------------------------------------------------------------------
-
+	
 	//--------------------------------------------------------------------------
 	mysql_reconnect(LOG_BASE);
 
