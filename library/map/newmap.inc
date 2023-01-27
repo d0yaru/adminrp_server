@@ -1,4 +1,5 @@
-fso_map = CreateDynamicObject(4825, 1145.949951, -2037.000000, 65.515602, 0.000000, 0.000000, 0.000000, 0, 0, -1);
+//fso_map = CreateDynamicObject(4825, 1145.949951, -2037.000000, 65.515602, 0.000000, 0.000000, 0.000000, 0, 0, -1);
+fso_map = CreateObject(4825, 1145.949951, -2037.000000, 65.515602, 0.000000, 0.000000, 0.000000);
 SetDynamicObjectMaterial(fso_map, 1, 3603, "bevmans01_la", "sjmlahus29", 0);
 SetDynamicObjectMaterial(fso_map, 2, 13235, "ce_ground09", "des_ranchwall1", 0);
 SetDynamicObjectMaterial(fso_map, 3, 13235, "ce_ground09", "des_ranchwall1", 0);
