@@ -48,7 +48,7 @@
 
 #define KEY_ALT 			1024
 #undef MAX_PLAYERS
-#define MAX_PLAYERS 50
+#define MAX_PLAYERS 100
 
 new const bool:WRITE_ACTION_SERVER = true;
 
@@ -1731,7 +1731,11 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 public: PiarTextToAll()
 {
 	SendClientMessageToAll(-1, "===================== [ {eb5252}Arizona Information{FFFFFF} ] =====================");
-	SendClientMessageToAll(-1, "\t\t\tМесто под рекламу!");
+	SendClientMessageToAll(-1, "\t\t\tIP сервера: 176.32.39.22:7777");
+	SendClientMessageToAll(-1, "\t\t\tСайт проекта: https://adminrp.ru/");
+	SendClientMessageToAll(-1, "\t\t\tФорум: https://forum.adminrp.ru/");
+	SendClientMessageToAll(-1, "\t\t\tГруппа VK: https://vk.com/samp51");
+	SendClientMessageToAll(-1, "\t\t\tDiscord: https://discord.gg/tKXJrgHttX");
 	SendClientMessageToAll(-1, "===================== [ {eb5252}Arizona Information{FFFFFF} ] =====================");
 }
 
