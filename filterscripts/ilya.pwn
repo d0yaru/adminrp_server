@@ -1732,10 +1732,10 @@ public: PiarTextToAll()
 {
 	SendClientMessageToAll(-1, "===================== [ {eb5252}Arizona Information{FFFFFF} ] =====================");
 	SendClientMessageToAll(-1, "\t\t\tIP сервера: 176.32.39.22:7777");
-	SendClientMessageToAll(-1, "\t\t\tСайт проекта: https://adminrp.ru/");
-	SendClientMessageToAll(-1, "\t\t\tФорум: https://forum.adminrp.ru/");
-	SendClientMessageToAll(-1, "\t\t\tГруппа VK: https://vk.com/samp51");
-	SendClientMessageToAll(-1, "\t\t\tDiscord: https://discord.gg/tKXJrgHttX");
+	SendClientMessageToAll(-1, "\t\t\tСайт проекта: adminrp.ru");
+	SendClientMessageToAll(-1, "\t\t\tФорум: forum.adminrp.ru");
+	SendClientMessageToAll(-1, "\t\t\tГруппа VK: vk.com/samp51");
+	SendClientMessageToAll(-1, "\t\t\tDiscord: discord.gg/tKXJrgHttX");
 	SendClientMessageToAll(-1, "===================== [ {eb5252}Arizona Information{FFFFFF} ] =====================");
 }
 
@@ -9082,7 +9082,118 @@ public: AttachPlayerITEM(playerid, type, skinid, setobject, slot, coloritem)
 			case 145: SetPlayerAttachedObject(playerid,slot,12634,1,0.095999,0.000000,0.000000,0.000000,87.399978,0.000000,1.000000,1.000000,1.000000);
 		}
 	}
+	/*
+	1	Спина
+	2	Голова
+	3	Плечо левой руки
+	4	Плечо правой руки
+	5	Левая рука
+	6	Правая рука
+	7	Левое бедро
+	8	Правое бедро
+	9	Левая нога
+	10	Правая нога
+	11	Правая голень
+	12	Левая голень
+	13	Левое предплечье
+	14	Правое предплечье
+	15	Левая ключица (плечо)
+	16	Правая ключица (плечо)
+	17	Шея
+	18	Челюсть
 	
+	(ID игрока, Слот, ID объекта, Кость, Смещение, Поворот, Масштаб,цвет1б цвет2)
+	*/
+	//--------------------------------------------------------------------------
+
+	else if type == 146 *then SetPlayerAttachedObject(playerid, slot, 5381, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 147 *then SetPlayerAttachedObject(playerid, slot, 5382, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 148 *then SetPlayerAttachedObject(playerid, slot, 5383, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 149 *then SetPlayerAttachedObject(playerid, slot, 5384, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 150 *then SetPlayerAttachedObject(playerid, slot, 5385, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 151 *then SetPlayerAttachedObject(playerid, slot, 5386, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 152 *then SetPlayerAttachedObject(playerid, slot, 5387, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 153 *then SetPlayerAttachedObject(playerid, slot, 5388, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 154 *then SetPlayerAttachedObject(playerid, slot, 5389, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 155 *then SetPlayerAttachedObject(playerid, slot, 5683, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 156 *then SetPlayerAttachedObject(playerid, slot, 5684, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 157 *then SetPlayerAttachedObject(playerid, slot, 5685, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 158 *then SetPlayerAttachedObject(playerid, slot, 5686, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 159 *then SetPlayerAttachedObject(playerid, slot, 5687, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 160 *then SetPlayerAttachedObject(playerid, slot, 5688, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 161 *then SetPlayerAttachedObject(playerid, slot, 5689, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 162 *then SetPlayerAttachedObject(playerid, slot, 5690, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 163 *then SetPlayerAttachedObject(playerid, slot, 5691, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 164 *then SetPlayerAttachedObject(playerid, slot, 5692, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 165 *then SetPlayerAttachedObject(playerid, slot, 5693, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 166 *then SetPlayerAttachedObject(playerid, slot, 5694, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 167 *then SetPlayerAttachedObject(playerid, slot, 5695, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 168 *then SetPlayerAttachedObject(playerid, slot, 5696, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 169 *then SetPlayerAttachedObject(playerid, slot, 5697, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 170 *then SetPlayerAttachedObject(playerid, slot, 5698, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 171 *then SetPlayerAttachedObject(playerid, slot, 5699, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 172 *then SetPlayerAttachedObject(playerid, slot, 5700, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 173 *then SetPlayerAttachedObject(playerid, slot, 5701, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 174 *then SetPlayerAttachedObject(playerid, slot, 5702, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 175 *then SetPlayerAttachedObject(playerid, slot, 6011, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 176 *then SetPlayerAttachedObject(playerid, slot, 6012, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 177 *then SetPlayerAttachedObject(playerid, slot, 6013, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 178 *then SetPlayerAttachedObject(playerid, slot, 12634, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 179 *then SetPlayerAttachedObject(playerid, slot, 12635, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 180 *then SetPlayerAttachedObject(playerid, slot, 12636, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 181 *then SetPlayerAttachedObject(playerid, slot, 12637, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 182 *then SetPlayerAttachedObject(playerid, slot, 12638, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 183 *then SetPlayerAttachedObject(playerid, slot, 12639, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 184 *then SetPlayerAttachedObject(playerid, slot, 12640, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 185 *then SetPlayerAttachedObject(playerid, slot, 12641, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 186 *then SetPlayerAttachedObject(playerid, slot, 12642, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 187 *then SetPlayerAttachedObject(playerid, slot, 12643, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 188 *then SetPlayerAttachedObject(playerid, slot, 12644, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 189 *then SetPlayerAttachedObject(playerid, slot, 12645, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 190 *then SetPlayerAttachedObject(playerid, slot, 12646, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 191 *then SetPlayerAttachedObject(playerid, slot, 12647, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 192 *then SetPlayerAttachedObject(playerid, slot, 12648, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 193 *then SetPlayerAttachedObject(playerid, slot, 12649, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 194 *then SetPlayerAttachedObject(playerid, slot, 12650, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 195 *then SetPlayerAttachedObject(playerid, slot, 12651, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 196 *then SetPlayerAttachedObject(playerid, slot, 12652, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 197 *then SetPlayerAttachedObject(playerid, slot, 12653, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 198 *then SetPlayerAttachedObject(playerid, slot, 12654, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 199 *then SetPlayerAttachedObject(playerid, slot, 12655, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 200 *then SetPlayerAttachedObject(playerid, slot, 12656, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 201 *then SetPlayerAttachedObject(playerid, slot, 12657, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 202 *then SetPlayerAttachedObject(playerid, slot, 12658, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 203 *then SetPlayerAttachedObject(playerid, slot, 12659, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 204 *then SetPlayerAttachedObject(playerid, slot, 12660, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 205 *then SetPlayerAttachedObject(playerid, slot, 12661, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 206 *then SetPlayerAttachedObject(playerid, slot, 12662, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 207 *then SetPlayerAttachedObject(playerid, slot, 12663, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 208 *then SetPlayerAttachedObject(playerid, slot, 12664, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 209 *then SetPlayerAttachedObject(playerid, slot, 12665, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 210 *then SetPlayerAttachedObject(playerid, slot, 12666, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 211 *then SetPlayerAttachedObject(playerid, slot, 12667, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 212 *then SetPlayerAttachedObject(playerid, slot, 12668, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 213 *then SetPlayerAttachedObject(playerid, slot, 12669, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 214 *then SetPlayerAttachedObject(playerid, slot, 12672, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 215 *then SetPlayerAttachedObject(playerid, slot, 12673, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 216 *then SetPlayerAttachedObject(playerid, slot, 12674, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 217 *then SetPlayerAttachedObject(playerid, slot, 12675, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 218 *then SetPlayerAttachedObject(playerid, slot, 12676, 14, 0.333999, 0.000000, 0.052999, -171.299987, 6.899997, -90.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 219 *then SetPlayerAttachedObject(playerid, slot, 12677, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 220 *then SetPlayerAttachedObject(playerid, slot, 12678, 13, 0.363999, 0.030000, -0.037000, -29.299983, -93.699974, 165.699874, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 221 *then SetPlayerAttachedObject(playerid, slot, 12679, 2, 0.070000, 0.017999, 0.001999, 83.499977, 75.299972, 6.499997, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 222 *then SetPlayerAttachedObject(playerid, slot, 12680, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 223 *then SetPlayerAttachedObject(playerid, slot, 12681, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 224 *then SetPlayerAttachedObject(playerid, slot, 12682, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 225 *then SetPlayerAttachedObject(playerid, slot, 12683, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 226 *then SetPlayerAttachedObject(playerid, slot, 12684, 1, 0.031000, -0.131000, -0.022000, -0.099996, -14.599997, -86.199981, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 227 *then SetPlayerAttachedObject(playerid, slot, 12685, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 228 *then SetPlayerAttachedObject(playerid, slot, 12686, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 229 *then SetPlayerAttachedObject(playerid, slot, 12687, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 230 *then SetPlayerAttachedObject(playerid, slot, 12688, 2, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 231 *then SetPlayerAttachedObject(playerid, slot, setobject, 1, 0.3540, -0.0170, 0.1860, 0.0000, 86.6000, 0.0000, 0.0090, 0.0090, 0.0090, -1, -1);
+
+	//--------------------------------------------------------------------------
 	return true;
 }
 

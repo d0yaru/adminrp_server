@@ -195,7 +195,7 @@ stock SharKey(playerid, value)
 	f(global_str, 70, "~n~~n~~n~~n~~n~~n~~n~~n~%s", (value == SharInfo[playerid][sharKey]) ? "~g~SUCESSFULLY":"~r~FAILED");
 	GameTextForPlayer(playerid, global_str, 1000, 3);
 	SharInfo[playerid][sharKey] = 1+random(3);
-    if SharInfo[playerid][sharProgress] <= 0 || (19332 > ItemsInfo[AksSlot[playerid][0][4]][ItemModel] > 19338) *then { SharMenuHide(playerid); return ResetShar(playerid); }
+    if SharInfo[playerid][sharProgress] <= 0 || (19332 > ItemsInfo[AksSlot[playerid][0][4]][ItemModel] > 19338) || (16801 > ItemsInfo[AksSlot[playerid][0][4]][ItemModel] > 16807) *then { SharMenuHide(playerid); return ResetShar(playerid); }
     UpdateSharMenu(playerid);
 	//
 	new objectid = ItemsInfo[AksSlot[playerid][0][4]][ItemModel];
@@ -243,6 +243,7 @@ stock SharKey(playerid, value)
 		SetDynamicObjectMaterial(SharInfo[playerid][sharObject][5], 1, 1560, "7_11_door", "CJ_CHROME2", 0);
 		SetDynamicObjectMaterial(SharInfo[playerid][sharObject][5], 0, 1414, "break_street1", "CJ_TV_SCREEN", 0);
 		AttachDynamicObjectToVehicle(SharInfo[playerid][sharObject][5], SharInfo[playerid][sharVehicle], 0.588821, 0.770865, 0.562280, 0.000000, 0.000000, 0.000000);
+
 		//
 		SetEngineStatus(SharInfo[playerid][sharVehicle], true, playerid);
 		DeletePVar(playerid, "state_object_shar");
@@ -266,7 +267,7 @@ stock ResetShar(playerid)
 	DestroyDynamicObjectModel(SharInfo[playerid][sharVehicle], SharInfo[playerid][sharObject][5], 19131);
 	if IsValidVehicle(SharInfo[playerid][sharVehicle]) *then DestroyVehicleEx(SharInfo[playerid][sharVehicle]);
 	SharInfo[playerid][sharVehicle] = INVALID_VEHICLE_ID;
-	if(19339 > ItemsInfo[AksSlot[playerid][0][4]][ItemModel] > 19331) SetPlayerAccessory(playerid, AksSlot[playerid][0][4], 4);
+	if ((19339 > ItemsInfo[AksSlot[playerid][0][4]][ItemModel] > 19331) || (16808 > ItemsInfo[AksSlot[playerid][0][4]][ItemModel] > 16800)) SetPlayerAccessory(playerid, AksSlot[playerid][0][4], 4);
 	return true;
 }
 stock UpdateSharMenu(playerid)
