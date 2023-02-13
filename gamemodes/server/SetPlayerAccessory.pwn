@@ -137,6 +137,7 @@ stock SetPlayerAccessory(playerid, id, slot)
 
 		case 2039..2123: SetAttachToSkin(playerid, 230 - (2123 - id), skin, item, slot);
 		case 2124..2130: SetAttachToSkin(playerid, 231, skin, item, slot);
+		case 2131..2163: SetAttachToSkin(playerid, 264 - (2163 - id), skin, item, slot);
 
 	}
 

@@ -422,7 +422,7 @@ new LauncherState[MAX_PLAYERS];
 //------------------------------------------------------------------------------
 // Заглушка Launcher Arizona ///////////////////////////////////////////////////
 //------------------------------------------------------------------------------
-#define LAUNCHER_ON (0) // 1 -вкл. лаунчер, 0 -откл. лаунчер
+#define LAUNCHER_ON (1) // 1 -вкл. лаунчер, 0 -откл. лаунчер
 //------------------------------------------------------------------------------
 #if LAUNCHER_ON
 #include LauncherAddon
@@ -12978,29 +12978,37 @@ public OnPlayerConnect(playerid)
 
 	if ANTI_RAK_BOT *then
 		SetPlayerNameInServerQuery(playerid, PlayerName[playerid]);
+
 	//--------------------------------------------------------------------------
-	if(!fexist("SerialBans.txt")) return 1;
-	new serialid[164];
-	gpci(playerid, serialid, sizeof(serialid));
-	new File:sfile = fopen("SerialBans.txt", io_read);
-	if(sfile)
-	{
-		new banstr[512];
-		while(fread(sfile, banstr))
-		{
-			if(strfind(banstr, serialid) != -1)
-			{
-				Kick(playerid);
+	// Проверка бана по SerialPC
+	new serial[164];
+	gpci(playerid, serial, sizeof(serial));
+	f(global_str, 150, "SELECT * FROM `banpc` WHERE `SerialPC` = '%s' LIMIT 1", serial);
+    mysql_tquery(mysql, global_str, "MysqlCheckPlayerBanPC", "d", playerid);
+	//--------------------------------------------------------------------------
+	//--------------------------------------------------------------------------
+	// if(!fexist("SerialBans.txt")) return 1;
+	// new serialid[164];
+	// gpci(playerid, serialid, sizeof(serialid));
+	// new File:sfile = fopen("SerialBans.txt", io_read);
+	// if(sfile)
+	// {
+	// 	new banstr[512];
+	// 	while(fread(sfile, banstr))
+	// 	{
+	// 		if(strfind(banstr, serialid) != -1)
+	// 		{
+	// 			Kick(playerid);
 				
-				global_str = "Ваш {FFFFFF}Serial ID {6EF83C}забанен на этом сервере!\n\n\
-				{FFFFFF}Если вы не согласны с блокировкой аккаунта,\n\
-				вы можете подать заявку на разблокировку на форуме: %s";
+	// 			global_str = "Ваш {FFFFFF}Serial ID {6EF83C}забанен на этом сервере!\n\n\
+	// 			{FFFFFF}Если вы не согласны с блокировкой аккаунта,\n\
+	// 			вы можете подать заявку на разблокировку на форуме: %s";
 				
-				SPDF(playerid, 0, DIALOG_STYLE_MSGBOX, !"Этот Serial ID заблокирован!", global_str, !"Ок", !"", Mode_Forum);
-			}
-		}
-		fclose(sfile);
-	}
+	// 			SPDF(playerid, 0, DIALOG_STYLE_MSGBOX, !"Этот Serial ID заблокирован!", global_str, !"Ок", !"", Mode_Forum);
+	// 		}
+	// 	}
+	// 	fclose(sfile);
+	// }
 	//--------------------------------------------------------------------------
 	SCM(playerid, COLOR_RED, !"Добро пожаловать на Arizona Role Play!");
 	PlayerPlaySound(playerid, 1062, 0.0, 0.0, 0.0);
@@ -17990,20 +17998,37 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		return false;
 
 	new Float:Health, Float:AksPerfect;
-
-	if !(issuerid == INVALID_PLAYER_ID) && GetAccessoryUpdate(AksSlot[issuerid][1][2]) *then
+	//--------------------------------------------------------------------------
+	// Урон: 2 и 3 слот
+	if !(issuerid == INVALID_PLAYER_ID) *then
 	{
-		AksPerfect = float(GetAccessoryUpdate(AksSlot[issuerid][1][2]));
-
-		amount += AksPerfect;
+		if GetAccessoryUpdate(AksSlot[issuerid][1][2], AksSlot[playerid][0][2]) *then
+		{
+			AksPerfect = float(GetAccessoryUpdate(AksSlot[issuerid][1][2], AksSlot[playerid][0][2]));
+			amount += AksPerfect;
+		}
+		if GetAccessoryUpdate(AksSlot[issuerid][1][3], AksSlot[playerid][0][3]) *then
+		{
+			AksPerfect = float(GetAccessoryUpdate(AksSlot[issuerid][1][3], AksSlot[playerid][0][3]));
+			amount += AksPerfect;
+		}
 	}
-
-	if !(issuerid == INVALID_PLAYER_ID) && GetAccessoryUpdate(AksSlot[playerid][1][1]) *then
+	//--------------------------------------------------------------------------
+	if !(issuerid == INVALID_PLAYER_ID) *then
 	{
-		AksPerfect = amount * (float(GetAccessoryUpdate(AksSlot[playerid][1][1]) * 2) / 100);
-
-		amount -= AksPerfect;
-
+		//----------------------------------------------------------------------
+		// Защита: 1 и 4 слот
+		if GetAccessoryUpdate(AksSlot[playerid][1][1], AksSlot[playerid][0][1]) *then
+		{
+			AksPerfect = amount * (float(GetAccessoryUpdate(AksSlot[playerid][1][1], AksSlot[playerid][0][1]) * 2) / 100);
+			amount -= AksPerfect;
+		}
+		if GetAccessoryUpdate(AksSlot[playerid][1][4], AksSlot[playerid][0][4]) *then
+		{
+			AksPerfect = amount * (float(GetAccessoryUpdate(AksSlot[playerid][1][4], AksSlot[playerid][0][4]) * 2) / 100);
+			amount -= AksPerfect;
+		}
+		//----------------------------------------------------------------------
 		if PI[playerid][pArmour] > 0 && weaponid <= 46 *then {
 
 			GetPlayerArmour(playerid, Health);
@@ -18016,7 +18041,6 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			SetPlayerHealth(playerid, Health - amount);
 		}
 	}
-
 	else
 	{
 		if PI[playerid][pArmour] > 0 && weaponid <= 46 *then {
@@ -18030,7 +18054,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			SetPlayerHealth(playerid, Health - amount);
 		}
 	}
-
+	//--------------------------------------------------------------------------
 	if(PI[playerid][pArmour] > 0)
 	{
 	    if(weaponid > 46) PI[playerid][pHealth] -= amount;
@@ -53757,26 +53781,29 @@ stock MinuteTimer()
 	foreach(new playerid: Player)
 	{
 		GetPlayerHealth(playerid, Health);
-
-		if GetAccessoryUpdate(AksSlot[playerid][1][0]) && Health < 100.0 *then
+		//----------------------------------------------------------------------
+		// Регенерация: 0 слот
+		if GetAccessoryUpdate(AksSlot[playerid][1][0], AksSlot[playerid][0][0]) && Health < 100.0 *then
 		{
-			UpdatePlayerHealth(playerid, Health + GetAccessoryUpdate(AksSlot[playerid][1][0]) );
+			UpdatePlayerHealth(playerid, Health + GetAccessoryUpdate(AksSlot[playerid][1][0], AksSlot[playerid][0][0]));
 		}
+		//----------------------------------------------------------------------
 	}
 	return true;
 }
-
-stock GetAccessoryUpdate(level)
+//------------------------------------------------------------------------------
+//
+stock GetAccessoryUpdate(level, id)
 {
 	switch level do
 	{
-		case 4..12:
-			return level - 3;
+		case 0..12:
+			return level + ItemsInfo[id][PowerAks];
 	}
 	
-	return false;
+	return 0;
 }
-
+//------------------------------------------------------------------------------
 stock SetBumSkin(playerid)
 {
 	SetPlayerSkinEx(playerid, PI[playerid][pSkin]);
@@ -53918,6 +53945,7 @@ stock PlayerIP(playerid)
 {
 	return PlayerIp[playerid];
 }
+//------------------------------------------------------------------------------
 stock CheckPlayerBanIP(playerid)
 {
 	static IP[16];
@@ -53934,7 +53962,7 @@ stock CheckPlayerBanIP(playerid)
 	cache_delete(result, mysql);
 	return 0;
 }
-
+//------------------------------------------------------------------------------
 stock BanPlayer(playerid)
 {
 	BanName(PN(playerid), "который выдал варн в оффлайне",5,"Заблокирован за получение 3-ех варнов");
@@ -54223,7 +54251,7 @@ stock ShowStats(playerid, giveplayerid)
 	%s{FFFFFF}Уровень розыска: {BE2D2D}[%d]\n\
 	{FFFFFF}Законопослушность: {BE2D2D}%d/100\n\n\
 	{FFFFFF}Защита: {B83434}[-%d%% урона]\n\
-	{FFFFFF}Регенерация: {B83434}[%d HP в мин.]\n\
+	{FFFFFF}Регенерация: {B83434}[+%d HP в мин.]\n\
 	{FFFFFF}Урон: {B83434}[+%d урона]\n\
 	{FFFFFF}Удача: {B83434}[шанс %d%% крит.урона]\n\n\
 	{FFFFFF}Предупреждения: {BE2D2D}[%d] \n\
@@ -54233,10 +54261,10 @@ stock ShowStats(playerid, giveplayerid)
 	PI[giveplayerid][pWanted],
 	PI[giveplayerid][pZKP],
 	
-	GetAccessoryUpdate(AksSlot[playerid][1][1]),
-	GetAccessoryUpdate(AksSlot[playerid][1][0]),
-	GetAccessoryUpdate(AksSlot[playerid][1][2]),
-	GetAccessoryUpdate(AksSlot[playerid][1][5]),
+	GetAccessoryUpdate(AksSlot[playerid][1][1], AksSlot[playerid][0][1])+GetAccessoryUpdate(AksSlot[playerid][1][4], AksSlot[playerid][0][4]),
+	GetAccessoryUpdate(AksSlot[playerid][1][0], AksSlot[playerid][0][0]),
+	GetAccessoryUpdate(AksSlot[playerid][1][2], AksSlot[playerid][0][2])+GetAccessoryUpdate(AksSlot[playerid][1][3], AksSlot[playerid][0][3]),
+	GetAccessoryUpdate(AksSlot[playerid][1][5], AksSlot[playerid][0][5]),
 
 	PI[giveplayerid][pWarns],
 	PI[giveplayerid][pAllRepl], str, (!PI[giveplayerid][pBankPass]) ? ("Не имеется"):(" Имеется "));
@@ -62067,75 +62095,66 @@ cmd:banipoff(playerid, params[])
 //------------------------------------------------------------------------------
 // banpc ///////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
+stock BanPC(SerialPC[])
+{
+    f(global_str, 100, "INSERT INTO `banpc` (`SerialPC`) VALUE ('%s')", SerialPC);
+	mysql_tquery(mysql, global_str);
+	return 1;
+}
+//------------------------------------------------------------------------------
 cmd:banpc(playerid, params[])
 {
-    if !IsOsnovatel(playerid, 1) *then return false;
-	if !CheckAdm(playerid, 8) *then return false;
+    if !IsOsnovatel(playerid, 1) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
+	if !CheckAdm(playerid, 8) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
 
-	new targetid;
-	if sscanf(params, "u", targetid) *then
+	new id;
+	if sscanf(params, "u", id) *then
 		return SCM(playerid, COLOR_OLDRED, !"Используй: /banpc [id]");
 
 	new serial[164];
-	gpci(targetid, serial, sizeof(serial));
-	new File:sfile = fopen("SerialBans.txt", io_readwrite);
-	new sstring[162];
-	format(sstring, sizeof(sstring), "%s\n", serial);
-	fwrite(sfile, sstring);
-	fclose(sfile);
-	sstring[0] = EOS;
-	format(sstring, sizeof(sstring), "Вы забанили серийный номер {FFFFFF}%s", serial);
-	SendClientMessage(playerid, 0x6EF83CFF, sstring);
-	Kick(targetid);
+	gpci(id, serial, sizeof(serial));
+
+	BanPC(serial);
+	SCMF(playerid, COLOR_OLDRED, "Вы забанили серийный номер: {FFFFFF}%s", serial);
+
+	Kick(id);
 
 	return 1;
 }
 //------------------------------------------------------------------------------
 cmd:unbanpc(playerid, params[])
 {
-    if !IsOsnovatel(playerid, 1) *then return false;
-	if !CheckAdm(playerid, 8) *then return false;
+    if !IsOsnovatel(playerid, 1) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
+	if !CheckAdm(playerid, 8) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
 
-	new serialid[164];
-	if sscanf(params, "s", serialid) *then
-		return SCM(playerid, COLOR_OLDRED, !"Используй: /unbanpc [serial]");
+	new serialpc[164];
+	if sscanf(params, "s[164]", serialpc) *then
+		return SCM(playerid, COLOR_OLDRED, !"Используй: /unbanpc [serialpc]");
 
-	if(!fexist("SerialBans.txt")) return SCM(playerid, 0x6EF83CFF, "На сервере нет забаненных {FFFFFF}Serial ID");
-	new File:sfile = fopen("SerialBans.txt", io_readwrite);
-	new banstr[512], templine[1024];
-	while(fread(sfile, banstr)) strcat(templine, banstr);
-	fclose(sfile);
-	new index = strfind(templine, serialid);
-	if(index == -1) return SCM(playerid, 0x6EF83CFF, "На этом сервере данный {FFFFFF}Serial ID {6EF83C}не забанен.");
-	strdel(templine, index, index + SERIAL_LENGTH);
-	sfile = fopen("SerialBans.txt", io_write);
-	fwrite(sfile, templine);
-	fclose(sfile);
-	SCM(playerid, 0x6EF83CFF, "Вы разабанили серийный номер:");
-	new sstring[128];
-	format(sstring, sizeof(sstring), "{FFFFFF}%s", serialid);
-	SCM(playerid, -1, sstring);
+	SQL("DELETE FROM `banpc` WHERE `SerialPC` = '%s'", serialpc);
 
+	SCMF(playerid, COLOR_OLDRED, "Вы разбанили серийный номер: {FFFFFF}%s", serialpc);
 	return 1;
 }
 //------------------------------------------------------------------------------
 cmd:serials(playerid, params[])
 {
-    if !IsOsnovatel(playerid, 1) *then return false;
-	if !CheckAdm(playerid, 8) *then return false;
+    if !IsOsnovatel(playerid, 1) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
+	if !CheckAdm(playerid, 8) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
 
-	if(!fexist("SerialBans.txt")) return SCM(playerid, 0x6EF83CFF, "На сервере нет забаненных {FFFFFF}Serial ID");
-	new banstr[512], File:file = fopen("SerialBans.txt", io_read);
-	SCM(playerid, -1, "{6EF83C}Список забаненых серийных номеров:");
-	if(file)
+	static Serial[164]; Serial = "";
+
+	new Cache:result = mysql_query(mysql, "SELECT `SerialPC` FROM `banpc` ORDER BY `ID` DESC LIMIT 0, 20"), serialpc = cache_get_row_count(mysql);
+	if(serialpc == 0) return SCM(playerid, COLOR_GREY, !"Список забаненных пуст");
+
+	for(new i; i < serialpc; i++)
 	{
-		fread(file, banstr);
-		fclose(file);
-		if(strlen(banstr) < 2) return SCM(playerid, 0xFFFFFFFF, "Список пуст");
-		file = fopen("SerialBans.txt", io_read);
-		while(fread(file, banstr)) SCM(playerid, 0xFFFFFFFF, banstr);
-		fclose(file);
+		cache_get_row(i, 0, Serial, mysql);
+		f(global_str, sizeof(global_str), "%s\n", Serial);
 	}
+	if(serialpc == 20) f(global_str, sizeof(global_str), "%s{AFAFAF}Далее >>>\n", global_str);
+	cache_delete(result, mysql);
+	SPD(playerid, 0, DIALOG_STYLE_LIST, "{FFFF00}Забаненые: SerialPC", global_str, "Закрыть", "");
 	return 1;
 }
 //------------------------------------------------------------------------------
@@ -69059,7 +69078,7 @@ public: MysqlChencheGroup(playerid)
 	mysql_tquery(mysql, global_str, "MysqlShowContacts", "d", playerid);
 	return 1;
 }
-
+//------------------------------------------------------------------------------
 public: MysqlCheckPlayerBanIP(playerid)
 {
 	if(cache_get_row_count(mysql) > 0)
@@ -69070,7 +69089,19 @@ public: MysqlCheckPlayerBanIP(playerid)
 	}
 	return 1;
 }
+//------------------------------------------------------------------------------
+public: MysqlCheckPlayerBanPC(playerid)
+{
+	if(cache_get_row_count(mysql) > 0)
+	{
+	    SCM(playerid, COLOR_RED, "Данный SerialPC заблокирован на нашем сервере!");
 
+		Kick(playerid);
+		return 1;
+	}
+	return 1;
+}
+//------------------------------------------------------------------------------
 stock TogglePlayerMap(playerid, toggle)
 {
 	if(toggle)
@@ -71381,7 +71412,7 @@ stock GetAccessoryItemPos(item)
 	switch item do
 	{
 /*5*/	case 2124..2130,1441,353,425..428,544,606..612,972,541,1157,1445: return 4;
-/*1*/	case 2114,349..351,360,390,391,398..400,342,416..419,414,412,410,409,429..462,516..520,512,513,491..495,545,618,619,971,1159,647..655,411,1446,1447,1429,1459..1460,1464..1467: return 0;
+/*1*/	case 2138,2114,349..351,360,390,391,398..400,342,416..419,414,412,410,409,429..462,516..520,512,513,491..495,545,618,619,971,1159,647..655,411,1446,1447,1429,1459..1460,1464..1467: return 0;
 /*3*/	case 2111,481..490,953..957,982..987,1121,1161: return 2;
 /*8*/	case 341,415,605,1457: return 7;
 /*6*/	case 2119,1440,1162..1171,684,685,334,336,337,338,339,594,593,595,604,596,597,598,599,600,601,602,614,348,354,355,357,358,359,369,397,395,394,393,401..405,413,420,421,423,509,510,511,424,543,542,584,585,586,352,361,582,620..646,656..664,970,980,1132..1155,1156,1160, 1438, 1448..1456,1458,1462,1463: return 5;
@@ -73199,19 +73230,19 @@ stock getItemInfo(playerid, slot)
 	switch GetAccessoryItemPos(item) do
 	{
 		case 0:
-			format(item_bonus, sizeof item_bonus, "+%d HP в мин.", GetAccessoryUpdate(Inventory[playerid][2][slot])),
+			format(item_bonus, sizeof item_bonus, "+%d HP в мин.", GetAccessoryUpdate(Inventory[playerid][2][slot], Inventory[playerid][0][slot])),
 			UpdateStr = "восстанавливает здоровье";
 		
 		case 1,4:
-			format(item_bonus, sizeof item_bonus, "-%d%% от урона", GetAccessoryUpdate(Inventory[playerid][2][slot])),
+			format(item_bonus, sizeof item_bonus, "-%d%% от урона", GetAccessoryUpdate(Inventory[playerid][2][slot], Inventory[playerid][0][slot])),
 			UpdateStr = "увеличивает защиту";
 
 		case 2,3:
-			format(item_bonus, sizeof item_bonus, "+%d%% урона", GetAccessoryUpdate(Inventory[playerid][2][slot])),
+			format(item_bonus, sizeof item_bonus, "+%d%% урона", GetAccessoryUpdate(Inventory[playerid][2][slot], Inventory[playerid][0][slot])),
 			UpdateStr = "увеличивает урон";
 
 		case 5:
-			format(item_bonus, sizeof item_bonus, "шанс %d%% на крит. урон", GetAccessoryUpdate(Inventory[playerid][2][slot])),
+			format(item_bonus, sizeof item_bonus, "шанс %d%% на крит. урон", GetAccessoryUpdate(Inventory[playerid][2][slot], Inventory[playerid][0][slot])),
 			UpdateStr = "увеличивает шанс критического урона";
 
 	}
@@ -73448,7 +73479,7 @@ cmd:addbiletall(playerid, params[]) {
 
 	return true;
 }
-/*
+
 cmd:giverub(playerid, data[])
 {
 	if !IsOsnovatel(playerid, 1) *then
@@ -73466,7 +73497,7 @@ cmd:giverub(playerid, data[])
 
 	return amlf("Администратор <a href=../pages/user?id=%d>%s</a> выдал %d AZ-RUB игроку <a href=../pages/user?id=%d>%s</a>", 5, "", "", PI[playerid][pID], PlayerName[playerid], count, PI[targetId][pID], PlayerName[targetId]);
 }
-
+/*
 cmd:giveazruball(playerid, params[]) {
 
 	if !IsOsnovatel(playerid, 1) *then
@@ -80670,6 +80701,27 @@ cmd:givemydonate(playerid, params[])
 	return SAMF(COLOR_VALIK, "[A] %s[%d] передал %d доната, игроку %s[%d]",PN(playerid), playerid, money, PN(id), id);
 }
 
+cmd:givedonate(playerid, data[])
+{
+	if !IsOsnovatel(playerid, 1) *then
+		return false;
+
+	extract data -> new player:targetId, count; else
+		 return SCM(playerid, COLOR_OLDRED, "Используйте: /givedonate [playerId] [count]");
+
+	if !IsPlayerOnline(targetId) *then
+		return false;
+
+	else if count > 5000000 *then
+		return SCM(playerid,COLOR_RED, !"[Ошибка]{FFFFFF} Нельзя передавать больше 5000000 AZ-coins !");
+
+	GiveDonate(targetId, count);
+
+	SAMF(COLOR_OLDRED, "Администратор %s[%d] выдал %d AZ-coins игроку %s[%d] !", PlayerName[playerid], playerid, count, PlayerName[targetId], targetId);
+
+	return amlf("Администратор <a href=../pages/user?id=%d>%s</a> выдал %d AZ-coins игроку <a href=../pages/user?id=%d>%s</a>", 5, "", "", PI[playerid][pID], PlayerName[playerid], count, PI[targetId][pID], PlayerName[targetId]);
+}
+
 cmd:ungivedonate(playerid, params[])
 {
    	extract params -> new player:targetid, money; else
@@ -82725,7 +82777,7 @@ stock SendLavkaDialog(playerid, param)
 	switch param do
 	{
 	    case 0: SPD(playerid, 3010, DIALOG_STYLE_MSGBOX, "{BFBBBA}", "{FFFFFF}Стоимость аренды лавки: {85E94E}2000${FFFFFF}\nВы действительно хотите выставить свой {85E94E}товар{FFFFFF} на продажу?", "Принять", "Отмена");
-	    case 1: SPD(playerid, 3021, DIALOG_STYLE_LIST, "{BFBBBA}Выбрите тип вашей лавки", "Продавать товар\nПокупать товар", "Принять", "Отменить");
+	    case 1: SPD(playerid, 3021, DIALOG_STYLE_LIST, "{BFBBBA}Выберите тип вашей лавки", "Продавать товар\nПокупать товар", "Принять", "Отменить");
 		case 2: SPD(playerid, 3020, DIALOG_STYLE_INPUT, "{BFBBBA}", "{FFFFFF}Введите название вашей лавки.\nИспользуйте до {85E94E}20{FFFFFF} символов!", "Принять", "Отменить");
 		case 3:	SPD(playerid, 3030, DIALOG_STYLE_LIST, "{BFBBBA}Выберете цвет", "{E94E4E}|||||||||||||||||||\n{E94EC0}|||||||||||||||||||\n{B64EE9}|||||||||||||||||||\n{664EE9}|||||||||||||||||||\n{4E9EE9}|||||||||||||||||||\n{4ED7E9}|||||||||||||||||||\n{4EE9A4}|||||||||||||||||||\n{4EE960}|||||||||||||||||||\n{9EE94E}|||||||||||||||||||\n{D2E94E}|||||||||||||||||||\n{E9BD4E}|||||||||||||||||||\n{E9854E}|||||||||||||||||||\n{A63030}|||||||||||||||||||\n{303FA6}|||||||||||||||||||\n{30A641}|||||||||||||||||||\n{FFFFFF}|||||||||||||||||||\n", "Выбрать", "Отменить");
 		case 4: // 0 prod // 1 kyp

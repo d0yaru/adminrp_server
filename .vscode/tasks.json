@@ -6,5 +6,9 @@
     "windows":
     {
         "command": "${workspaceRoot}\\pawno\\pawncc.exe"
+    },
+    "group": {
+        "kind": "build",
+        "isDefault": true
     }
 }
