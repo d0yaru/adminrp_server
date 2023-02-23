@@ -61984,6 +61984,12 @@ cmd:sban(playerid, params[])
 	new id, days, reason[30];
     if(sscanf(params, "uds[30]", id, days, reason)) return SCM(playerid, COLOR_OLDRED, !"Используй: /sban [id] [days 1-30] [Причина]");
 	if(id == INVALID_PLAYER_ID) return 0;
+	//--
+	if IsOsnovatel(id, 1) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа.");
+	static IP[16];
+	GetPlayerIp(id, IP, 16);
+	if CheckIPWhitelist(IP) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа.");
+	//--
 	if(strlen(reason) > 30) return SCM(playerid, COLOR_RED, !"Не больше 30 символов!");
  	if(IsAIP(reason)) return 1;
 
@@ -62023,9 +62029,13 @@ cmd:ban(playerid, data[])
     if sscanf(data, "uds[30]", id, days, reason) *then
 		return SCM(playerid, COLOR_OLDRED, !"Используй: /ban [id] [days 1-30] [Причина]");
 
-	if id == INVALID_PLAYER_ID *then
-		return 0;
-
+	if id == INVALID_PLAYER_ID *then return 0;
+	//--
+	if IsOsnovatel(id, 1) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа.");
+	static IP[16];
+	GetPlayerIp(id, IP, 16);
+	if CheckIPWhitelist(IP) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа.");
+	//--
 	if strlen(reason) > 30 *then
 		return SCM(playerid, COLOR_RED, !"Не больше 30 символов!");
 
@@ -62057,6 +62067,12 @@ cmd:banip(playerid, params[])
     new id, reason[30];
     if(sscanf(params, "us[30]", id, reason)) return SCM(playerid, COLOR_OLDRED, !"Используй: /banip [id] [Причина]");
 	if(id == INVALID_PLAYER_ID) return 0;
+	//--
+	if IsOsnovatel(id, 1) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа.");
+	static IP[16];
+	GetPlayerIp(id, IP, 16);
+	if CheckIPWhitelist(IP) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа.");
+	//--
  	if(IsAIP(reason)) return 1;
 
     
@@ -62083,6 +62099,9 @@ cmd:banipoff(playerid, params[])
     
     static ip[16];
     if(sscanf(params,"s[16]s[30]",ip,params[0])) return SCM(playerid, COLOR_OLDRED, !"Используй: /banipoff [ip] [Причина]");
+	//--
+	if CheckIPWhitelist(ip) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа.");
+	//--
     if(strlen(params[0]) > 30) return SCM(playerid, COLOR_RED, !"Не больше 30 символов!");
     
     if(IsAIP(params[0]))return 1;
@@ -62111,15 +62130,20 @@ cmd:banpc(playerid, params[])
 	if sscanf(params, "u", id) *then
 		return SCM(playerid, COLOR_OLDRED, !"Используй: /banpc [id]");
 
+	//--
+	if IsOsnovatel(id, 1) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа.");
+	static IP[16];
+	GetPlayerIp(id, IP, 16);
+	if CheckIPWhitelist(IP) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа.");
+	//--
 	new serial[164];
 	gpci(id, serial, sizeof(serial));
 
 	BanPC(serial);
-	SCMF(playerid, COLOR_OLDRED, "Вы забанили серийный номер: {FFFFFF}%s", serial);
 
 	Kick(id);
 
-	return 1;
+	return SCMF(playerid, COLOR_OLDRED, "Вы забанили серийный номер: {FFFFFF}%s", serial);
 }
 //------------------------------------------------------------------------------
 cmd:unbanpc(playerid, params[])
@@ -62143,20 +62167,100 @@ cmd:serials(playerid, params[])
 	if !CheckAdm(playerid, 8) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
 
 	static Serial[164]; Serial = "";
-
+	global_str = "";
 	new Cache:result = mysql_query(mysql, "SELECT `SerialPC` FROM `banpc` ORDER BY `ID` DESC LIMIT 0, 20"), serialpc = cache_get_row_count(mysql);
 	if(serialpc == 0) return SCM(playerid, COLOR_GREY, !"Список забаненных пуст");
 
 	for(new i; i < serialpc; i++)
 	{
 		cache_get_row(i, 0, Serial, mysql);
-		f(global_str, sizeof(global_str), "%s\n", Serial);
+		f(global_str, sizeof(global_str), "%s%s\n", global_str, Serial);
 	}
 	if(serialpc == 20) f(global_str, sizeof(global_str), "%s{AFAFAF}Далее >>>\n", global_str);
 	cache_delete(result, mysql);
 	SPD(playerid, 0, DIALOG_STYLE_LIST, "{FFFF00}Забаненые: SerialPC", global_str, "Закрыть", "");
 	return 1;
 }
+//------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+// IP Whitelist ////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
+stock CheckIPWhitelist(IP[16])
+{
+	//static IP[16];
+	//GetPlayerIp(playerid, IP, 16);
+	f(global_str, 100,"SELECT * FROM `ipwhitelist` WHERE `IP` = '%s' LIMIT 1", IP);
+	new Cache:result = mysql_query(mysql, global_str);
+	if(cache_get_row_count(mysql) > 0)
+	{
+		cache_delete(result, mysql);
+		return 1;
+	}
+	cache_delete(result, mysql);
+	return 0;
+}
+//------------------------------------------------------------------------------
+cmd:addipwlist(playerid, params[])
+{
+    if !IsOsnovatel(playerid, 1) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
+	if !CheckAdm(playerid, 8) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
+	//--
+	new ip[16];
+	if sscanf(params, "s[16]", ip) *then
+		return SCM(playerid, COLOR_OLDRED, !"Используй: /addipwlist [ip]");
+	
+	//--
+	//new y, m, d;
+	//getdate(y, m, d);
+	//f(mysql_string, 12, "%d-%d-%d", y, m, d);
+	//--
+	f(global_str, 61, "INSERT INTO `ipwhitelist` (`IP`) VALUE ('%s')", ip);
+	mysql_tquery(mysql, global_str);
+	//--
+
+	return SCMF(playerid, -1, "Вы добавили ip:[{ffa500}%s{ffffff}] в белый лист", ip);
+}
+//------------------------------------------------------------------------------
+cmd:delipwlist(playerid, params[])
+{
+    if !IsOsnovatel(playerid, 1) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
+	if !CheckAdm(playerid, 8) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
+
+	new ip[16];
+	if sscanf(params, "s[16]", ip) *then
+		return SCM(playerid, COLOR_OLDRED, !"Используй: /delipwlist [ip]");
+
+	//--
+	SQL("DELETE FROM `ipwhitelist` WHERE `IP` = '%s'", ip);
+	//--
+	return SCMF(playerid, -1, "Вы удалили ip:[{ffa500}%s{ffffff}] из белого листа", ip);
+}
+//------------------------------------------------------------------------------
+cmd:ipwlist(playerid, params[])
+{
+    if !IsOsnovatel(playerid, 1) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
+	if !CheckAdm(playerid, 8) *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
+	//--
+	static Listip[16]; Listip = "";
+	global_str = "";
+	new Cache:result = mysql_query(mysql, "SELECT `IP` FROM `ipwhitelist` ORDER BY `ID` DESC LIMIT 0, 20"), listip = cache_get_row_count(mysql);
+	if(listip == 0) return SCM(playerid, COLOR_GREY, !"Список пуст");
+
+	for(new i; i < listip; i++)
+	{
+		cache_get_row(i, 0, Listip, mysql);
+		f(global_str, sizeof(global_str), "%s%s\n", global_str, Listip);
+	}
+	if(listip == 20) f(global_str, sizeof(global_str), "%s{AFAFAF}Далее >>>\n", global_str);
+	
+	cache_delete(result, mysql);
+	//--
+	return SPD(playerid, 0, DIALOG_STYLE_LIST, "{FFFF00}Whitelist IP:", global_str, "Закрыть", "");
+}
+//------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
 stock strtokban(const string[], &index)
 {
@@ -62182,9 +62286,10 @@ cmd:sbanoff(playerid, params[])
     if(strlen(reason) > 30) return SCM(playerid, COLOR_RED, !"Не больше 30 символов!");
 	if(day <1 && 30<day) return SCM(playerid, COLOR_OLDRED, !"Используй: /sbanoff [name] [дней] [Причина]");
 	
-    if(IsAIP(reason))return 1;
+    if(IsAIP(reason)) return 1;
  	new player = GetPlayerID(name);
     if(player != INVALID_PLAYER_ID) return SCM(playerid,COLOR_RED,!"ОН ОНЛАЙН!");
+
     f(global_str, 150 ," Администратор %s тихо забанил в оффлайне игрока %s. Причина: %s",PN(playerid),name,reason);
     SendAdminsMessage(COLOR_RED,global_str);
 
@@ -71412,12 +71517,12 @@ stock GetAccessoryItemPos(item)
 	switch item do
 	{
 /*5*/	case 2124..2130,1441,353,425..428,544,606..612,972,541,1157,1445: return 4;
-/*1*/	case 2138,2114,349..351,360,390,391,398..400,342,416..419,414,412,410,409,429..462,516..520,512,513,491..495,545,618,619,971,1159,647..655,411,1446,1447,1429,1459..1460,1464..1467: return 0;
+/*1*/	case 2114,349..351,360,390,391,398..400,342,416..419,414,412,410,409,429..462,516..520,512,513,491..495,545,618,619,971,1159,647..655,411,1446,1447,1429,1459..1460,1464..1467: return 0;
 /*3*/	case 2111,481..490,953..957,982..987,1121,1161: return 2;
 /*8*/	case 341,415,605,1457: return 7;
 /*6*/	case 2119,1440,1162..1171,684,685,334,336,337,338,339,594,593,595,604,596,597,598,599,600,601,602,614,348,354,355,357,358,359,369,397,395,394,393,401..405,413,420,421,423,509,510,511,424,543,542,584,585,586,352,361,582,620..646,656..664,970,980,1132..1155,1156,1160, 1438, 1448..1456,1458,1462,1463: return 5;
 /*7*/	case 499..508,1125: return 6;
-/*2*/	case 392,406,1158,463..480,674..681,537,408,340,343..345,1442: return 1;
+/*2*/	case 2078,2138,392,406,1158,463..480,674..681,537,408,340,343..345,1442: return 1;
 	}
 	return 3;//4 - 2113,
 }
