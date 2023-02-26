@@ -393,7 +393,7 @@ public: @UseItem(playerid, td)
 		case 549: callcmd::jfish(playerid);
 		//----------------------------------------------------------------------
 		// Cars
-        case 368,370..381,554..577,703,1259..1330,1351..1358,1783..2037:// (Сертификаты)
+        case 368,370..381,554..577,703,1259..1330,1351..1358,1783..2037,2164..2177:// (Сертификаты)
         {
             if !IsPlayerInRangeOfPoint(playerid, 250, -2123.6548,-854.3079,32.0939) *then 
 				return SCM(playerid, COLOR_RED, !"[Ошибка] {FFFFFF}Активировать сертификат можно только на автобазаре!");
@@ -483,7 +483,7 @@ public: @UseItem(playerid, td)
 		}
 		//----------------------------------------------------------------------
 		// Skin
-		case 1..311, 1172..1242, 1253..1258, 1331..1340, 1511..1782:
+		case 1..311,1172..1242,1253..1258,1331..1340,1511..1782,2178..2200:
 		{
 	    	if !(TeamDuty{playerid} or InJob[playerid] or PI[playerid][pDemorgan]) *then ChangeInventorySkin(playerid);
 			return false;
