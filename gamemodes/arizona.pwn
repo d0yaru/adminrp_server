@@ -12737,7 +12737,7 @@ stock ShowPlayerAZS(playerid)
 	for(new i;i < sizeof(GoFuel);i ++)
 	{
 		new biz = GoFuel[i][gfBizzID];
-		f(global_str,1500,"%s\n{FFFFFF}%s {B83434}%d/50000 л. {9ACD32}$%d\n",global_str, GoFuel[i][gfName],BizData[biz][bProducts],BizData[biz][bMoney]);
+		f(global_str,2000,"%s\n{FFFFFF}%s {B83434}%d/50000 л. {9ACD32}$%d\n",global_str, GoFuel[i][gfName],BizData[biz][bProducts],BizData[biz][bMoney]);
 	}
 	SPD(playerid,236,2,"Выберите АЗС",global_str,"Выбор", !"Отмена");
 	return 1;
@@ -12748,7 +12748,7 @@ stock ShowPlayerGS(playerid)
 	for(new i;i < sizeof(GoGunShop);i ++)
 	{
 		new biz = GoGunShop[i][gsBizzID];
-		f(global_str,1500,"%s\n{FFFFFF}%s {B83434}%d/50000 мат. Баланс бизнеса: {9ACD32}$%d\n",global_str, GoGunShop[i][gsName],BizData[biz][bProducts],BizData[biz][bMoney]);
+		f(global_str,2000,"%s\n{FFFFFF}%s {B83434}%d/50000 мат. Баланс бизнеса: {9ACD32}$%d\n",global_str, GoGunShop[i][gsName],BizData[biz][bProducts],BizData[biz][bMoney]);
 	}
 	SPD(playerid,258,2,"Выберите GunShop",global_str,"Выбор", !"Отмена");
 	return 1;
@@ -15397,6 +15397,9 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			else SCM(playerid,COLOR_ACHAT,"Для начала развозки пиццы возьмите ее в пункте выдачи!");
 	    }
 	    else if(InJob[playerid]==3 && InJobs[playerid]!=0) ExitCar(playerid);
+		//----------------------------------------------------------------------
+		//   Ф Е Р М А   ///////////////////////////////////////////////////////
+		//----------------------------------------------------------------------
 		if(VehicleInfo[carid][vJob] == 18)
 	    {
 	        if(InJob[playerid]!=1)
@@ -15412,6 +15415,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	        InJob[playerid]=3;
 	        FarmJob[playerid]=0;
 	    }
+		//----------------------------------------------------------------------
 	    else if(VehicleInfo[carid][vJob] == 19)
 	    {
 	        if(InJob[playerid]!=1)
@@ -15427,7 +15431,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	        InJob[playerid]=3;
 	        FarmJob[playerid]=0;
 	    }
-
+		//----------------------------------------------------------------------
 	    else if(VehicleInfo[carid][vJob] == 20)
 	    {
 	        if(InJob[playerid]!=1)
@@ -15443,6 +15447,9 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	        InJob[playerid]=3;
 	        FarmJob[playerid]=0;
 	    }
+		//----------------------------------------------------------------------
+	 	////////////////////////////////////////////////////////////////////////
+    	//----------------------------------------------------------------------
 	    if(VehicleInfo[carid][vTeam] != 0)
 	    {
 	        if(VehicleInfo[carid][vTeam] == TEAM_LICENSERS && CarTest[playerid] != -1 && GetVehicleModel(carid)== 426)
@@ -15584,6 +15591,9 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	    }
 		if !IsAPlane(vehicleid) && !IsAVelik(vehicleid) && !IsATrain(vehicleid) *then SpeedometrSetting(playerid);
 		if(vehicleid != INVALID_VEHICLE_ID && GetVehicleSeat(vehicleid, seat) == playerid) VehicleSeat[vehicleid][seat] = INVALID_PLAYER_ID;
+		//----------------------------------------------------------------------
+		//   Ф Е Р М А   ///////////////////////////////////////////////////////
+		//----------------------------------------------------------------------
 		if(VehicleInfo[vehicleid][vJob] == 18 && InJob[playerid]==3)
 	    {
 			SCM(playerid,COLOR_GREY, !"[Информация] {FFFFFF}Вы вышли из вашего трактора, если вы что-то заработали, то можете получить зарплату в здании фермы.");
@@ -15591,6 +15601,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	        InJob[playerid]=1;
 	        FarmJob[playerid]=-1;
 	    }
+		//----------------------------------------------------------------------
 	    else if(VehicleInfo[vehicleid][vJob] == 19 && InJob[playerid]==3)
 	    {
 	        SCM(playerid,COLOR_GREY, !"[Информация] {FFFFFF}Вы вышли из комбайна, если вы что-то заработали, то можете получить зарплату в здании фермы.");
@@ -15598,6 +15609,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	        InJob[playerid]=1;
 	        FarmJob[playerid]=-1;
 	    }
+		//----------------------------------------------------------------------
 	    else if(VehicleInfo[vehicleid][vJob] == 20 && InJob[playerid]==3)
 	    {
 	        SCM(playerid,COLOR_GREY, !"[Информация] {FFFFFF}Вы вышли из кукурузника, если вы что-то заработали, то можете получить зарплату в здании фермы.");
@@ -15605,6 +15617,9 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	        InJob[playerid]=1;
 	        FarmJob[playerid]=-1;
 	    }
+		//----------------------------------------------------------------------
+		////////////////////////////////////////////////////////////////////////
+		//----------------------------------------------------------------------
 		if(CarTest[playerid] != -1 && VehicleInfo[vehicleid][vTeam] == TEAM_LICENSERS || MotoTest[playerid] != -1)
 		{
 		    new i = CarTest[playerid];
@@ -16541,6 +16556,9 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
             else if(mtest == 20) SPD(playerid, 0,0, "", "\n\n{FFFFFF}Отлично!\nТеперь вы должны выехать из {9ACD32}парковки{FFFFFF}, включив заднюю скорость, а\nзатем {9ACD32}повернуть{FFFFFF} направо.\n\n", "Понял","");
 		}
 	}
+	//--------------------------------------------------------------------------
+	//   Ф Е Р М А   ///////////////////////////////////////////////////////////
+	//--------------------------------------------------------------------------
 	if(FarmJob[playerid] != -1 && checkpointid == Tfarm_CP[FarmJob[playerid]])
 	{
 		TogglePlayerDynamicRaceCP(playerid,Tfarm_CP[FarmJob[playerid]],false);
@@ -16561,6 +16579,7 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
   			TogglePlayerDynamicRaceCP(playerid,Tfarm_CP[FarmJob[playerid]],true);
 		}
 	}
+	//--------------------------------------------------------------------------
 	if(FarmJob[playerid] != -1 && checkpointid == Kfarm_CP[FarmJob[playerid]])
 	{
 		TogglePlayerDynamicRaceCP(playerid,Kfarm_CP[FarmJob[playerid]],false);
@@ -16585,6 +16604,7 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
   			TogglePlayerDynamicRaceCP(playerid,Kfarm_CP[FarmJob[playerid]],true);
 		}
 	}
+	//--------------------------------------------------------------------------
 	if(FarmJob[playerid] != -1 && checkpointid == Zfarm_CP[FarmJob[playerid]])
 	{
 		TogglePlayerDynamicRaceCP(playerid,Zfarm_CP[FarmJob[playerid]],false);
@@ -16605,6 +16625,9 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
   			TogglePlayerDynamicRaceCP(playerid,Zfarm_CP[FarmJob[playerid]],true);
 		}
 	}
+	//--------------------------------------------------------------------------
+	////////////////////////////////////////////////////////////////////////////
+	//--------------------------------------------------------------------------
 	return 1;
 }
 
@@ -18464,7 +18487,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 	}
 
-    if(newkeys & KEY_SPRINT && newkeys & KEY_JUMP && !IsPlayerInAnyVehicle(playerid) && !PlayerLie{playerid}) ApplyAnimationEx(playerid, !"PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0, 1);
+    //if(newkeys & KEY_SPRINT && newkeys & KEY_JUMP && !IsPlayerInAnyVehicle(playerid) && !PlayerLie{playerid}) ApplyAnimationEx(playerid, !"PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0, 1);
     if(newkeys & KEY_FIRE)
 	{
 	    if(trenazherget[playerid] == 1)
@@ -32731,7 +32754,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		    {
      			new hour,minuite,second;
 			    gettime(hour,minuite,second);
-				if(PlayerJob[playerid]== PlayerJob[playerid])return SendBotMessage(playerid,"Вы и так уже тут работаете!");
+				if(PlayerJob[playerid] == PlayerJob[playerid]) return SendBotMessage(playerid,"Вы и так уже тут работаете!");
 				if(IsAtFrakcia(playerid, 1) && (hour > 10 && hour < 20 ))
 				{
 			 		SCM(playerid,COLOR_GREY, !"Гос. организации могут работать после 20.00 до 10.00!");
@@ -35466,7 +35489,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						strcat(global_str,"{73B461}/eat{FFFFFF} - Есть чипсы.\n");
 						strcat(global_str,"{73B461}/beer{FFFFFF} - Пить пиво.\n");
 						strcat(global_str,"{73B461}/sprunk{FFFFFF} - Пить спранк.\n");
-						strcat(global_str,"{73B461}/number{FFFFFF} - Телефоная книга.\n");
+						strcat(global_str,"{73B461}/number{FFFFFF} - Телефонная книга.\n");
 						strcat(global_str,"{73B461}/break{FFFFFF} - Вскрыть наручники.\n");
 						strcat(global_str,"{73B461}/radio{FFFFFF} - Включить радио.\n");
 						strcat(global_str,"{73B461}/armour{FFFFFF} - Одеть бронежилет.\n");
@@ -57848,7 +57871,7 @@ cmd:plveh(playerid, params[])
 
 	f(global_str, 150, "[A] Администратор %s[%d] выдал временную машину игроку %s[%d] [%d]", PN(playerid), playerid, PN(id), id, PI[id][plveh]);
 	SendAdminsMessage(COLOR_GREY, global_str);
-    if !IsAVelik(PI[id][plveh]) *then SetEngineStatus(PI[id][plveh], false, id);
+    if !IsAVelik(PI[id][plveh]) *then SetEngineStatus(PI[id][plveh], true, id);
 	return 1;
 }
 cmd:wedding(playerid, params[])
@@ -69015,7 +69038,77 @@ stock GetXYInFrontOfObject(objectid, &Float:x, &Float:y, Float:angle, Float:dist
     x += (distance * floatsin(-angle, degrees));
     y += (distance * floatcos(-angle, degrees));
 }
+//------------------------------------------------------------------------------
+// Такси
+#define NAME "AdminRP"
 
+new TaxiAttach[MAX_VEHICLES];
+
+stock CreateTaxiAttach(vehicleid)
+{
+	if(GetVehicleModel(vehicleid) == 415)
+	{
+		TaxiAttach[vehicleid] = CreateDynamicObject(19327, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 1
+		SetDynamicObjectMaterialText(TaxiAttach[vehicleid], 0, ""NAME" TAXI\nЗВОНИТЕ ПО НОМЕРУ", 130, "Ariel", 15, 1, 0xFFFFFFFF, 0, 1);
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, 0.000000, -1.044000, 0.445000, -23.599001, 0.000000, 0.000000);
+
+		TaxiAttach[vehicleid] = CreateDynamicObject(19327, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 1
+		SetDynamicObjectMaterialText(TaxiAttach[vehicleid], 0, "- 913 -", 130, "Ariel", 22, 1, 0xFFFFFFFF, 0, 1);
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, 0.000000, -1.091000, 0.335000, -23.799000, 0.000000, 0.000000);
+
+		TaxiAttach[vehicleid] = CreateDynamicObject(19308, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 0
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, 0.000000, -0.460000, 0.699000, 0.000000, 0.000000, 90.000000);
+	}
+	if(GetVehicleModel(vehicleid) == 420)
+	{
+		TaxiAttach[vehicleid] = CreateDynamicObject(19327, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 1
+		SetDynamicObjectMaterialText(TaxiAttach[vehicleid], 0, ""NAME" TAXI", 130, "Ariel", 40, 1, 0xFFFFFFFF, 0, 1);
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, -0.030000, -1.526000, 0.641000, -57.199001, 0.000000, 0.000000);
+
+		TaxiAttach[vehicleid] = CreateDynamicObject(19327, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 1
+		SetDynamicObjectMaterialText(TaxiAttach[vehicleid], 0, "ЗВОНИТЕ ПО НОМЕРУ", 130, "Ariel", 25, 1, 0xFFFFFFFF, 0, 1);
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, -0.020000, -1.639000, 0.569000, -58.598999, 0.000000, 0.000000);
+
+		TaxiAttach[vehicleid] = CreateDynamicObject(19327, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 1
+		SetDynamicObjectMaterialText(TaxiAttach[vehicleid], 0, "- 913 -", 130, "Ariel", 80, 1, 0xFFFFFFFF, 0, 1);
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, -0.020000, -1.810000, 0.459000, -57.500000, 0.000000, 0.000000);
+	}
+	if(GetVehicleModel(vehicleid) == 579)
+	{
+		TaxiAttach[vehicleid] = CreateDynamicObject(19327, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 1
+		SetDynamicObjectMaterialText(TaxiAttach[vehicleid], 0, ""NAME" TAXI", 130, "Ariel", 34, 1, 0xFFFFFFFF, 0, 1);
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, 0.000000, -2.596000, 0.903000, -27.600000, 0.000000, 0.000000);
+
+		TaxiAttach[vehicleid] = CreateDynamicObject(19327, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 1
+		SetDynamicObjectMaterialText(TaxiAttach[vehicleid], 0, "ЗВОНИТЕ ПО НОМЕРУ", 130, "Ariel", 20, 1, 0xFFFFFFFF, 0, 1);
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, 0.000000, -2.642000, 0.814000, -23.799999, 0.000000, 0.000000);
+
+		TaxiAttach[vehicleid] = CreateDynamicObject(19327, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 1
+		SetDynamicObjectMaterialText(TaxiAttach[vehicleid], 0, "- 913 -", 130, "Ariel", 47, 1, 0xFFFFFFFF, 0, 1);
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, 0.000000, -2.717000, 0.672000, -26.698999, 0.000000, 0.000000);
+
+		TaxiAttach[vehicleid] = CreateDynamicObject(19308, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 0
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, 0.000000, -1.029000, 1.319000, 0.000000, 0.000000, 0.000000);
+	}
+	if(GetVehicleModel(vehicleid) == 580)
+	{
+		TaxiAttach[vehicleid] = CreateDynamicObject(19327, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 1
+		SetDynamicObjectMaterialText(TaxiAttach[vehicleid], 0, ""NAME" TAXI", 130, "Ariel", 34, 1, 0xFFFFFFFF, 0, 1);
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, 0.000000, -1.634000, 0.802000, -39.599998, 0.000000, 0.000000);
+
+		TaxiAttach[vehicleid] = CreateDynamicObject(19327, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 1
+		SetDynamicObjectMaterialText(TaxiAttach[vehicleid], 0, "ЗВОНИТЕ ПО НОМЕРУ", 130, "Ariel", 20, 1, 0xFFFFFFFF, 0, 1);
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, 0.000000, -1.693000, 0.725000, -37.999001, 0.000000, 0.000000);
+
+		TaxiAttach[vehicleid] = CreateDynamicObject(19327, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 1
+		SetDynamicObjectMaterialText(TaxiAttach[vehicleid], 0, "- 913 -", 130, "Ariel", 42, 1, 0xFFFFFFFF, 0, 1);
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, 0.000000, -1.783000, 0.631000, -35.799999, 0.000000, 0.000000);
+
+		TaxiAttach[vehicleid] = CreateDynamicObject(19308, 0.000000, 0.000000, -1000.000000, 0.000000, 0.000000, 0.000000, 0, 0, -1, STREAMER_OBJECT_SD, 150.0); // 0
+		AttachDynamicObjectToVehicle(TaxiAttach[vehicleid], vehicleid, 0.000000, -0.410000, 1.129000, 0.000000, 0.000000, 0.000000);
+	}
+}
+//------------------------------------------------------------------------------
 stock LoadVehicles()
 {
 	new currenttime = GetTickCount();
@@ -69319,6 +69412,162 @@ stock LoadVehicles()
 	CreateJobVehicle(JOB_PIZZA,448, 1751.2262,2224.5493,10.4200,87.7106, 3, 3,  RES_CAR_TIME);
 	CreateJobVehicle(JOB_PIZZA,448, 1751.2468,2220.2297,10.4206,90.0917, 3, 3,  RES_CAR_TIME);
 	CreateJobVehicle(JOB_PIZZA,448, 1751.6473,2218.6179,10.4188,93.0859, 3, 3,  RES_CAR_TIME);
+	//--------------------------------------------------------------------------
+	// Такси
+	//--------------------------------------------------------------------------
+	new taxicar1 = CreateJobVehicle(JOB_TAXI, 420, 1063.50, -1763.90, 13.19, 270, 6, 6, RES_CAR_TIME);
+
+	CreateJobVehicle(JOB_TAXI, 420, 2147.6467, -1157.3550, 23.4894, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2147.5330, -1161.6392, 23.4894, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2147.4675, -1166.2587, 23.4894, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2147.4338, -1170.8635, 23.4894, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2147.4719, -1175.7715, 23.4894, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2147.4368, -1180.2921, 23.4894, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2147.3428, -1184.9250, 23.4894, 270.0000, 6, 6, RES_CAR_TIME);
+
+	CreateJobVehicle(JOB_TAXI, 420, 1063.59997559,-1775.69995117,13.19999981,270.00000000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 1063.59997559,-1769.69995117,13.19999981,270.00000000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 1063.59997559,-1758.00000000,13.30000019,270.00000000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 1063.59997559,-1752.00000000,13.30000019,270.00000000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 1063.59997559,-1746.09997559,13.30000019,270.00000000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 1063.50000000,-1740.19995117,13.30000019,270.00000000, 6, 6, RES_CAR_TIME);
+	
+	CreateJobVehicle(JOB_TAXI, 420, 159.5747, -163.4501, 1.3221, 90.4101, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 159.5734, -166.6906, 1.3221, 90.4101, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 159.5098, -171.8708, 1.3221, 90.4101, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 159.5204, -175.7410, 1.3221, 90.4101, 6, 6, RES_CAR_TIME);
+
+	CreateJobVehicle(JOB_TAXI, 420, 2805.2815, 1326.1350, 10.3866, 270.4524, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2805.2175, 1332.6567, 10.3866, 270.4524, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2805.1868, 1345.3809, 10.3866, 270.4524, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2805.1108, 1351.7854, 10.3866, 270.4524, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2804.9702, 1364.3650, 10.3866, 270.4524, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2804.9580, 1370.8323, 10.3866, 270.4524, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2813.5513, 1375.0787, 10.3866, 180.6553, 6, 6, RES_CAR_TIME);
+
+	CreateJobVehicle(JOB_TAXI, 420, 2157.8330, 987.9869, 10.4502, 360.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2151.2722, 987.9686, 10.4502, 360.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2144.9858, 987.9401, 10.4502, 360.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2138.5859, 987.9042, 10.4502, 360.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2132.1841, 988.0284, 10.4502, 360.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2132.1846, 1006.5904, 10.4502, 90.1051, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2132.1926, 1012.9504, 10.4502, 90.1051, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2132.3030, 1019.2924, 10.4502, 90.1051, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, 2132.3093, 1025.6713, 10.4502, 90.1051, 6, 6, RES_CAR_TIME);
+
+	CreateJobVehicle(JOB_TAXI, 420, -1964.7651, 105.5459, 27.4084, 90.2113, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, -1964.7872, 100.6797, 27.4084, 90.2113, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, -1964.7867, 98.1396, 27.4084, 90.2113, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, -1964.7623, 93.2782, 27.4084, 90.2113, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, -1964.7936, 90.6587, 27.4084, 90.2113, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, -1964.7448, 85.6379, 27.4084, 90.2113, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, -1975.9830, 83.7797, 27.4084, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, -1976.0020, 86.2425, 27.4084, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_TAXI, 420, -1976.0045, 96.2337, 27.4084, 270.0000, 6, 6, RES_CAR_TIME);
+
+	new taxicar2 = CreateJobVehicle(JOB_TAXI,420,1099.00000000,-1769.69995117,13.50000000,90.00000000,66,66,RES_CAR_TIME);
+	for(new i = taxicar1; i <= taxicar2; i ++)
+	{
+		TaxiText[i] = CreateDynamic3DTextLabel("<< Такси для аренды >>",COLOR_GOLD,0,0,1.4,20.0,INVALID_PLAYER_ID,i);
+		CreateTaxiAttach(i);
+	}
+	//--------------------------------------------------------------------------
+	// грузовики на заводе
+	CreateJobVehicle(JOB_TRUCKER,514,-243.60000610352,-214.39999389648,2.0999999046326,250.0,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,514,-242.10000610352,-210.5,2.0999999046326,250.0,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,514,-240.60000610352,-206.39999389648,2.0999999046326,250.0,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,514,-239,-202.19999694824,2.0999999046326,250.0,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,514,-237.39999389648,-198,2.0999999046326,250.0,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,514,-235.80000305176,-193.80000305176,2.0999999046326,250.0,-1,-1,RES_CAR_TIME);
+	// контейнеры на заводе
+	CreateJobVehicle(JOB_TRUCKER,591,-221.10000610352,-192.89999389648,2.0999999046326,165.0,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,591,-216.89999389648,-193.89999389648,2.0999999046326,165.0,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,591,-212.60000610352,-195.00000000000,2.0999999046326,165.0,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,591,-208.30000305176,-196.10000610352,2.0999999046326,165.0,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,591,-203.89999389648,-197.19999694824,2.0999999046326,165.0,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,591,-199.19999694824,-198.39999389648,2.0999999046326,165.0,-1,-1,RES_CAR_TIME);
+	// цыстерны в порту LS
+	CreateJobVehicle(JOB_TRUCKER,584, 2345.8572, -2340.9146, 14.6157, 45.6939,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,584, 2349.1504, -2337.4753, 14.6157, 45.2318,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,584, 2352.7537, -2333.7805, 14.6157, 45.2318,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,584, 2356.8618, -2329.6274, 14.6157, 45.2318,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,584, 2361.9436, -2324.5420, 14.6157, 45.2318,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,584, 2365.4797, -2320.8169, 14.6157, 45.2318,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,584, 2369.2466, -2317.1560, 14.6157, 45.2318,-1,-1,RES_CAR_TIME);
+	// грузовики в порту LS
+	CreateJobVehicle(JOB_TRUCKER,403, 2283.7920, -2361.7754, 13.7764, 315.0000,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,403, 2281.1604, -2359.0247, 13.7764, 315.0000,-1,-1,RES_CAR_TIME);
+	//CreateJobVehicle(JOB_TRUCKER,403, 2278.2554, -2356.1472, 13.7764, 315.0000,-1,-1,RES_CAR_TIME); // внутри склада
+	//CreateJobVehicle(JOB_TRUCKER,403, 2275.0803, -2352.8027, 13.7764, 315.0000,-1,-1,RES_CAR_TIME);
+	//CreateJobVehicle(JOB_TRUCKER,403, 2271.9958, -2349.7327, 13.7764, 315.0000,-1,-1,RES_CAR_TIME);
+	//CreateJobVehicle(JOB_TRUCKER,403, 2269.0525, -2346.7141, 13.7764, 315.0000,-1,-1,RES_CAR_TIME);
+	//CreateJobVehicle(JOB_TRUCKER,403, 2266.0740, -2343.7979, 13.7764, 315.0000,-1,-1,RES_CAR_TIME);
+	//CreateJobVehicle(JOB_TRUCKER,403, 2262.9104, -2340.6689, 13.7764, 315.0000,-1,-1,RES_CAR_TIME);
+	// грузовики в SF
+	CreateJobVehicle(JOB_TRUCKER,403, 283.2295, 1438.1410, 11.0016, 90.2786,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,403, 283.1770, 1443.2140, 11.0016, 90.2786,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,403, 283.1367, 1448.1686, 11.0016, 90.2786,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,403, 283.2121, 1453.6683, 11.0016, 90.2786,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,403, 283.0680, 1458.7559, 11.0016, 90.2786,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,403, 283.0476, 1463.7240, 11.0016, 90.2786,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,403, 282.9244, 1468.6151, 11.0016, 90.2786,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,403, 282.6463, 1473.5391, 11.0016, 90.2786,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,403, 282.6335, 1478.9354, 11.0016, 90.2786,-1,-1,RES_CAR_TIME);
+	// цыстерны в SF
+    CreateJobVehicle(JOB_TRUCKER,584, 283.4396, 1388.0272, 11.5307, 90.0000,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,584, 283.5101, 1381.8278, 11.5307, 90.0000,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,584, 283.5234, 1376.4355, 11.5307, 90.0000,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,584, 283.6128, 1370.9796, 11.5307, 90.0000,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,584, 283.6699, 1365.1796, 11.5307, 90.0000,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,584, 283.6070, 1359.5594, 11.5307, 90.0000,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,584, 283.4159, 1353.5386, 11.5307, 90.0000,-1,-1,RES_CAR_TIME);
+    CreateJobVehicle(JOB_TRUCKER,584, 283.4125, 1347.8372, 11.5307, 90.0000,-1,-1,RES_CAR_TIME);
+	// грузовики в склады SF
+	CreateJobVehicle(JOB_TRUCKER,514, 2818.0342, 898.4192, 11.0842, 360.0000,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,514, 2827.2937, 898.4471, 11.0842, 359.3848,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,514, 2855.2280, 898.3457, 11.0842, 359.3848,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,514, 2801.5776, 968.6064, 11.0842, 180.9509,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,514, 2822.7566, 968.4808, 11.0842, 180.9509,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,514, 2828.0725, 968.5270, 11.0842, 180.9509,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,514, 2807.1160, 968.5431, 11.0842, 180.9509,-1,-1,RES_CAR_TIME);
+	// контейнеры в склады SF
+	CreateJobVehicle(JOB_TRUCKER,591, 2875.9521, 937.7621, 11.2442, 91.0000,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,591, 2876.1030, 932.4043, 11.2442, 91.0000,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,591, 2876.1101, 926.7573, 11.2442, 91.0000,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,591, 2876.1948, 921.3900, 11.2442, 91.0000,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,591, 2876.1301, 916.0045, 11.2442, 91.0000,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,591, 2876.1934, 910.3636, 11.2442, 91.0000,-1,-1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_TRUCKER,591, 2876.2161, 905.1071, 11.2442, 91.0000,-1,-1,RES_CAR_TIME);
+	//--------------------------------------------------------------------------
+	// Ферма
+	CreateJobVehicle(18,531, -270.2865, -112.2759, 3.0328, 73.0000,43,1,RES_CAR_TIME);// трактор
+	CreateJobVehicle(18,531, -272.4866, -119.7816, 3.0328, 73.0000,43,1,RES_CAR_TIME);
+	CreateJobVehicle(18,531, -273.5097, -123.8623, 3.0328, 73.0000,43,1,RES_CAR_TIME);
+	CreateJobVehicle(18,531, -274.8136, -127.9387, 3.0328, 73.0000,43,1,RES_CAR_TIME);
+	CreateJobVehicle(18,531, -286.9964, -111.2960, 2.1032, 254.6761,43,1,RES_CAR_TIME);
+	CreateJobVehicle(18,531, -288.0367, -115.3296, 2.1032, 254.6761,43,1,RES_CAR_TIME);
+	CreateJobVehicle(18,531, -290.2695, -123.6411, 2.1032, 254.6761,43,1,RES_CAR_TIME);
+	CreateJobVehicle(18,531, -240.4103, -133.0202, 3.0328, 71.6191,43,1,RES_CAR_TIME);
+	CreateJobVehicle(18,531, -239.2496, -128.9333, 3.0328, 71.6191,43,1,RES_CAR_TIME);
+	CreateJobVehicle(18,531, -236.7027, -121.6897, 3.0328, 71.6191,43,1,RES_CAR_TIME);
+	CreateJobVehicle(18,531, -253.8011, -120.8019, 3.0964, 255.0000,43,1,RES_CAR_TIME);
+	CreateJobVehicle(18,531, -254.9627, -124.7728, 3.0964, 255.0000,43,1,RES_CAR_TIME);
+	CreateJobVehicle(18,531, -257.4177, -132.8690, 3.0964, 255.0000,43,1,RES_CAR_TIME);
+
+	CreateJobVehicle(19,532, -142.8849, -141.7535, 4.1843, 350.0000,6,1,RES_CAR_TIME);// комбаин
+	CreateJobVehicle(19,532, -152.1641, -140.0825, 4.1843, 350.0000,6,1,RES_CAR_TIME);
+	CreateJobVehicle(19,532, -176.1418, -135.8917, 4.1843, 350.0000,6,1,RES_CAR_TIME);
+	CreateJobVehicle(19,532, -185.0528, -134.2568, 4.1843, 350.0000,6,1,RES_CAR_TIME);
+	CreateJobVehicle(19,532, 68.1860, -172.3685, 2.2343, 358.1570,6,1,RES_CAR_TIME);
+	CreateJobVehicle(19,532, 58.8262, -172.0788, 2.2343, 358.1570,6,1,RES_CAR_TIME);
+	CreateJobVehicle(19,532, 33.7615, -170.2010, 2.2343, 358.1570,6,1,RES_CAR_TIME);
+	CreateJobVehicle(19,532, 24.5828, -169.8550, 2.2343, 358.1570,6,1,RES_CAR_TIME);
+
+	CreateJobVehicle(20,512, 127.0399, -6.0957, 1.7356, 90.0000,43,1,RES_CAR_TIME);// кукурузник
+	CreateJobVehicle(20,512, 127.0399, -19.1657, 1.7356, 90.0000,43,1,RES_CAR_TIME);
+	CreateJobVehicle(20,512, 127.0399, -33.1657, 1.7356, 90.0000,43,1,RES_CAR_TIME);
+	CreateJobVehicle(20,512, 126.7599, -46.1657, 1.7356, 86.1029,43,1,RES_CAR_TIME);
+	//--------------------------------------------------------------------------
 	// product
 	new productmin = CreateJobVehicle(3, 456, 1635.9636,2303.1755,10.5882, 90.0, 43, 1, RES_CAR_TIME);
 	CreateJobVehicle(3, 456, 1636.4476,2312.3328,10.5619, 90.0, 43, 1, RES_CAR_TIME);
@@ -70167,7 +70416,7 @@ stock LoadCity()
 		TeleportPickup[i] = CreateDynamicPickup(19132, 1, TeleportInfo[i][tpEnterPos_X], TeleportInfo[i][tpEnterPos_Y], TeleportInfo[i][tpEnterPos_Z], TeleportInfo[i][tpEnterWorld], TeleportInfo[i][tpEnterInt]);
 	
 	for new i; i < sizeof PhoneBooth; i++ do
-		CreateDynamicObject(1346, PhoneBooth[i][pbPosX], PhoneBooth[i][pbPosY], PhoneBooth[i][pbPosZ], 360.0, 360.0, PhoneBooth[i][pbPosA], 0, 0, INVALID_PLAYER_ID, STREAMER_OBJECT_SD, 100.0),
+		CreateDynamicObject(1346, PhoneBooth[i][pbPosX], PhoneBooth[i][pbPosY], PhoneBooth[i][pbPosZ], 360.0, 360.0, PhoneBooth[i][pbPosA], -1, -1, -1, STREAMER_OBJECT_SD, 100.0),
 		CreateDynamic3DTextLabel(!"Телефонная будка\n{FFFFFF}Нажмите: ALT, чтобы вызвать такси.", 0x42B02CFF, PhoneBooth[i][pbPosX], PhoneBooth[i][pbPosY], PhoneBooth[i][pbPosZ], 20.0000, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 0, 0);
 		//CreateDynamic3DTextLabel("Телефонная будка\n{FFFFFF}Нажмите: ALT, чтобы вызвать такси.",COLOR_GREEN,phonepos[i][0],phonepos[i][1],phonepos[i][2],20.0);
 	
@@ -78636,7 +78885,7 @@ stock ClearPlayerData(playerid)
  	PassInfo[playerid][psDate][0] 				=
  	PassInfo[playerid][psDate][1] 				=
  	PassInfo[playerid][psDate][2] 				=
- 	TaxiTarif[playerid] 						=
+ 	TaxiTarif[playerid] 						= 0;
 	TaxiPrice[playerid] 						=
 	TaxiDistance[playerid] 						=
 	PI[playerid][pbydilnik]						=
