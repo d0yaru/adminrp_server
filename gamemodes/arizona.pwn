@@ -10230,7 +10230,7 @@ new Float:MusorPos[MAX_MUSORS][4] =
 	{1418.5046,-1719.4152,13.5469,269.2261}
 };
 //------------------------------------------------------------------------------
-new Float:KfarmCP[41][6] =
+new Float:KfarmCP[41][3] =
 {
     {-184.9722,-82.7518,4.0306},
 	{-131.5195,45.3891,4.0314},
@@ -10274,7 +10274,7 @@ new Float:KfarmCP[41][6] =
 	{-25.1018,16.0796,4.0290},
 	{-51.7812,20.7080,4.0368}
 };
-new Float:ZfarmCP[25][6] =
+new Float:ZfarmCP[25][3] =
 {
 	{100.6866,-64.5787,1.5455},
 	{56.0033,-145.7697,0.9653},
@@ -10303,7 +10303,7 @@ new Float:ZfarmCP[25][6] =
 	{69.5594,10.8043,0.8711}
 };
 
-new Float:TfarmCP[70][6] =
+new Float:TfarmCP[70][3] =
 {
 	{-118.1748,97.4917,3.0651},
 	{-102.3105,145.5701,3.0610},
@@ -13597,10 +13597,10 @@ public OnPlayerSpawn(playerid)
 	if(TeamDuty{playerid}) SetPlayerColor(playerid, TeamColors[GetTeamID(playerid)]);
 	else SetPlayerColor(playerid, 0xFDFCFC15);
 	
-    if(PI[playerid][pBeg][0] == -1 && PI[playerid][pLevel] < 4)
+    if(PI[playerid][pBeg][0] == -1 && PI[playerid][pLevel] < 10)
     {
         PI[playerid][pBeg][0] = 0;
-        SCM(playerid, -1, !"{DFCFCF}>>>{DC4747} Пока вы малоимущий {DFCFCF}(до 4-го уровня){DC4747}, на улице вы можете попрошайничать деньги.");
+        SCM(playerid, -1, !"{DFCFCF}>>>{DC4747} Пока вы малоимущий {DFCFCF}(до 10-го уровня){DC4747}, на улице вы можете попрошайничать деньги.");
         SCM(playerid, -1, !"{DC4747}Используйте команду {DFCFCF}/beg{DC4747}, чтобы поставить табличку и банку для денег!");
     }
 	if IsValidDynamicArea(area_boombox[playerid]) *then DestroyDynamicArea(area_boombox[playerid]);
@@ -16559,70 +16559,81 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 	//--------------------------------------------------------------------------
 	//   Ф Е Р М А   ///////////////////////////////////////////////////////////
 	//--------------------------------------------------------------------------
-	if(FarmJob[playerid] != -1 && checkpointid == Tfarm_CP[FarmJob[playerid]])
+	if( FarmJob[playerid] < sizeof(Tfarm_CP) )
 	{
-		TogglePlayerDynamicRaceCP(playerid,Tfarm_CP[FarmJob[playerid]],false);
-		if( (FarmJob[playerid]+1) == sizeof(Tfarm_CP) )
+		if(FarmJob[playerid] != -1 && checkpointid == Tfarm_CP[FarmJob[playerid]])
 		{
-		    ferman[playerid]+=14;
-  			SCM(playerid,COLOR_GREY, !"[Информация] {FFFFFF}Вы успешно отработали. {ECB534}Ваш навык фермера повышен на 60 единиц[ /ffarm ]");
-  			f(global_str, 70,"[Информация] {FFFFFF}Вы уже заработали: %d$",ferman[playerid]*GLS[4]);
-  			SCM(playerid,COLOR_GREY,global_str);
-  			PI[playerid][pContractTime]+=60;
-  			GiveBizMoney(BIZ_ELECTRO_LS,450);
-			FarmJob[playerid]=0;
-			TogglePlayerDynamicRaceCP(playerid,Tfarm_CP[0],true);
-  		}
-  		else
-  		{
-  			FarmJob[playerid] ++;
-  			TogglePlayerDynamicRaceCP(playerid,Tfarm_CP[FarmJob[playerid]],true);
+			TogglePlayerDynamicRaceCP(playerid,Tfarm_CP[FarmJob[playerid]],false);
+			if( (FarmJob[playerid]+1) == sizeof(Tfarm_CP) )
+			{
+				ferman[playerid]+=14;
+				SCM(playerid,COLOR_GREY, !"[Информация] {FFFFFF}Вы успешно отработали. {ECB534}Ваш навык фермера повышен на 60 единиц[ /ffarm ]");
+				f(global_str, 70,"[Информация] {FFFFFF}Вы уже заработали: %d$",ferman[playerid]*GLS[4]);
+				SCM(playerid,COLOR_GREY,global_str);
+				PI[playerid][pContractTime]+=60;
+				GiveBizMoney(BIZ_ELECTRO_LS,450);
+				FarmJob[playerid]=0;
+				TogglePlayerDynamicRaceCP(playerid,Tfarm_CP[0],true);
+			}
+			else
+			{
+				FarmJob[playerid] ++;
+				TogglePlayerDynamicRaceCP(playerid,Tfarm_CP[FarmJob[playerid]],true);
+			}
 		}
 	}
 	//--------------------------------------------------------------------------
-	if(FarmJob[playerid] != -1 && checkpointid == Kfarm_CP[FarmJob[playerid]])
+	if( FarmJob[playerid] < sizeof(Kfarm_CP) )
 	{
-		TogglePlayerDynamicRaceCP(playerid,Kfarm_CP[FarmJob[playerid]],false);
-		if( (FarmJob[playerid]+1) == sizeof(Kfarm_CP) )
+		if(FarmJob[playerid] != -1 && checkpointid == Kfarm_CP[FarmJob[playerid]])
 		{
-		    ferman[playerid]+=26;
-  			SCM(playerid,COLOR_GREY, !"[Информация] {FFFFFF}Вы успешно отработали. {ECB534}Ваш навык фермера повышен на 90 единиц[ /ffarm ]");
-  			f(global_str, 100,"[Информация] {FFFFFF}Вы уже заработали: %d$",ferman[playerid]*GLS[4]);
-  			SCM(playerid,COLOR_GREY,global_str);
-  			GLS[27] +=90;
-  			SaveInformation();
-  			GiveBizMoney(BIZ_ELECTRO_LS,600);
-	    	f(global_str, 200, "Склад фермы\n\n\n{D38A37}%d{FFFFFF} продуктов\nСтоимость закупки: {D38A37}%d$\n\n{D38A37}Для загрузки посигнальте!",GLS[27],GLS[31]);
-			UpdateDynamic3DTextLabelText(FactoryText[1], COLOR_WHITE, global_str);
-  			PI[playerid][pContractTime]+=90;
-			FarmJob[playerid]=0;
-			TogglePlayerDynamicRaceCP(playerid,Kfarm_CP[0],true);
-  		}
-  		else
-  		{
-  			FarmJob[playerid] ++;
-  			TogglePlayerDynamicRaceCP(playerid,Kfarm_CP[FarmJob[playerid]],true);
+			TogglePlayerDynamicRaceCP(playerid,Kfarm_CP[FarmJob[playerid]],false);
+			if( (FarmJob[playerid]+1) == sizeof(Kfarm_CP) )
+			{
+				ferman[playerid]+=26;
+				SCM(playerid,COLOR_GREY, !"[Информация] {FFFFFF}Вы успешно отработали. {ECB534}Ваш навык фермера повышен на 90 единиц[ /ffarm ]");
+				f(global_str, 100,"[Информация] {FFFFFF}Вы уже заработали: %d$",ferman[playerid]*GLS[4]);
+				SCM(playerid,COLOR_GREY,global_str);
+				GLS[27] +=90;
+				SaveInformation();
+				GiveBizMoney(BIZ_ELECTRO_LS,600);
+				f(global_str, 200, "Склад фермы\n\n\n{D38A37}%d{FFFFFF} продуктов\nСтоимость закупки: {D38A37}%d$\n\n{D38A37}Для загрузки посигнальте!",GLS[27],GLS[31]);
+				UpdateDynamic3DTextLabelText(FactoryText[1], COLOR_WHITE, global_str);
+				PI[playerid][pContractTime]+=90;
+				FarmJob[playerid]=0;
+				TogglePlayerDynamicRaceCP(playerid,Kfarm_CP[0],true);
+			}
+			else
+			{
+				FarmJob[playerid] ++;
+				TogglePlayerDynamicRaceCP(playerid,Kfarm_CP[FarmJob[playerid]],true);
+			}
 		}
 	}
 	//--------------------------------------------------------------------------
-	if(FarmJob[playerid] != -1 && checkpointid == Zfarm_CP[FarmJob[playerid]])
+	if( FarmJob[playerid] < sizeof(Zfarm_CP) )
 	{
-		TogglePlayerDynamicRaceCP(playerid,Zfarm_CP[FarmJob[playerid]],false);
-		if( (FarmJob[playerid]+1) == sizeof(Zfarm_CP) )
+		if(FarmJob[playerid] != -1 && checkpointid == Zfarm_CP[FarmJob[playerid]])
 		{
-      		ferman[playerid]+=54;
-  			SCM(playerid,COLOR_GREY, !"[Информация] {FFFFFF}Вы успешно отработали. {ECB534}Ваш навык фермера повышен на 50 единиц[ /ffarm ]");
-  			f(global_str, 100,"[Информация] {FFFFFF}Вы уже заработали: %d$",ferman[playerid]*GLS[4]);
-  			SCM(playerid,COLOR_GREY, global_str);
-  			PI[playerid][pContractTime]+=50;
-  			GiveBizMoney(BIZ_ELECTRO_LS,700);
-			FarmJob[playerid]=0;
-			TogglePlayerDynamicRaceCP(playerid,Zfarm_CP[0],true);
-  		}
-  		else
-  		{
-  		    FarmJob[playerid] ++;
-  			TogglePlayerDynamicRaceCP(playerid,Zfarm_CP[FarmJob[playerid]],true);
+			TogglePlayerDynamicRaceCP(playerid,Zfarm_CP[FarmJob[playerid]],false);
+			if( (FarmJob[playerid]+1) == sizeof(Zfarm_CP) )
+			{
+				ferman[playerid]+=54;
+				SCM(playerid,COLOR_GREY, !"[Информация] {FFFFFF}Вы успешно отработали. {ECB534}Ваш навык фермера повышен на 50 единиц[ /ffarm ]");
+				f(global_str, 100,"[Информация] {FFFFFF}Вы уже заработали: %d$",ferman[playerid]*GLS[4]);
+				SCM(playerid,COLOR_GREY, global_str);
+				//--
+				PI[playerid][pContractTime]+=50;
+				GiveBizMoney(BIZ_ELECTRO_LS,700);
+				//--
+				FarmJob[playerid]=0;
+				TogglePlayerDynamicRaceCP(playerid,Zfarm_CP[0],true);
+			}
+			else
+			{
+				FarmJob[playerid] ++;
+				TogglePlayerDynamicRaceCP(playerid,Zfarm_CP[FarmJob[playerid]],true);
+			}
 		}
 	}
 	//--------------------------------------------------------------------------
@@ -17798,7 +17809,7 @@ stock GarageMovement(playerid)
 			{
 				if IsPlayerInRangeOfPoint(playerid, 2.0, HouseInfo[i][hGarage_X], HouseInfo[i][hGarage_Y], HouseInfo[i][hGarage_Z]) *then
 				{
-					if !IsACop(playerid) && (!IsPlayerHouse(playerid, i) or !IsPlayerTenant(playerid, i)) *then
+					if !IsACop(playerid) && !IsPlayerHouse(playerid, i) && !IsPlayerTenant(playerid, i) *then
 						return SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Это не ваш гараж!");
 
 					if veh_id *then
@@ -20212,14 +20223,14 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 		//----------------------------------------------------------------------
-		/*for(new i;i<sizeof(phonepos);i++)
+		for(new i;i<sizeof(PhoneBooth);i++)
 		{
-		    if(IsPlayerInRangeOfPoint(playerid, 2, phonepos[i][0],phonepos[i][1],phonepos[i][2]))
+		    if(IsPlayerInRangeOfPoint(playerid, 2, PhoneBooth[i][pbPosX],PhoneBooth[i][pbPosY],PhoneBooth[i][pbPosZ]))
 			{
  				SetPlayerChatBubble(playerid, "Использует телефон", COLOR_PURPLE, 10.0, 5000);
  				SPD(playerid,2261,0,"","{FAAC58}- Телефонная будка{FFFFFF}\n\nСтоимость вызова такси составляет 75$, если наша компания найдет свободное\nтакси мы вас сразу оповестим.\n{FAAC58}Желаете продолжить?", !"Принять", !"Отмена");
 			}
-		}*/
+		}
 		
         if(IsPlayerInRangeOfPoint(playerid,1.5,649.3248,-1353.8834,13.5470))
         {
@@ -34082,7 +34093,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			            {
 			                if(InJob[playerid]==0)
 			                {
-			                    PI[playerid][pOldSkin] = GetPlayerSkin(playerid);
+			                    PI[playerid][pOldSkin] = GetSkinInfo(GetPlayerSkin(playerid), 4);
 	                            if(PI[playerid][pSex] == 1) SetPlayerSkinEx(playerid, 133);
 								if(PI[playerid][pSex] == 2) SetPlayerSkinEx(playerid, 131);
 								InJob[playerid]=1;
@@ -34104,7 +34115,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			            {
 			                if(InJob[playerid]==0)
 			                {
-			                    PI[playerid][pOldSkin] = GetPlayerSkin(playerid);
+			                    PI[playerid][pOldSkin] = GetSkinInfo(GetPlayerSkin(playerid), 4);
 	                            if(PI[playerid][pSex] == 1) SetPlayerSkinEx(playerid, 158);
 								if(PI[playerid][pSex] == 2) SetPlayerSkinEx(playerid, 201);
 								InJob[playerid]=1;
@@ -34123,7 +34134,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			            {
 			                if(InJob[playerid]==0)
 			                {
-			                    PI[playerid][pOldSkin] = GetPlayerSkin(playerid);
+			                    PI[playerid][pOldSkin] = GetSkinInfo(GetPlayerSkin(playerid), 4);
 	                            if(PI[playerid][pSex] == 1) SetPlayerSkinEx(playerid, 161);
 								if(PI[playerid][pSex] == 2) SetPlayerSkinEx(playerid, 198);
 								InJob[playerid]=1;
@@ -34141,7 +34152,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			            {
 			                if(InJob[playerid]==0)
 			                {
-			                    PI[playerid][pOldSkin] = GetPlayerSkin(playerid);
+			                    PI[playerid][pOldSkin] = GetSkinInfo(GetPlayerSkin(playerid), 4);
 	                            if(PI[playerid][pSex] == 1) SetPlayerSkinEx(playerid, 128);
 								if(PI[playerid][pSex] == 2) SetPlayerSkinEx(playerid, 198);
 								InJob[playerid]=1;
@@ -35065,7 +35076,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			    new tarif; static name[30];
 				sscanf(inputtextsave, "p<,>is[30]", tarif, name);
 				new carid = GetPlayerVehicleID(playerid);
-				if(tarif > 0 && tarif <= 70)
+				if(tarif > 0 && tarif <= 7000)
 				{
 				    if(strlen(name) <= 30)
 				    {
@@ -35079,9 +35090,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						f(global_str,sizeof(global_str),"\n{B83434}%s\n{FFFFFF}Тариф: %d", name, tarif);
 						UpdateDynamic3DTextLabelText(TaxiText[carid], COLOR_WHITE, global_str);
 					}
-					else SPD(playerid,56,1,"Тариф","{FFFFFF}Введите ваш тариф и слоган через запятую\n\n{9ACD32}- Тариф не менее $1 и не более $70\nСлоган не более 30-и символов","Ок", !"Отмена");
+					else SPD(playerid,56,1,"Тариф","{FFFFFF}Введите ваш тариф и слоган через запятую\n\n{9ACD32}- Тариф не менее $1 и не более $7000\nСлоган не более 30-и символов","Ок", !"Отмена");
 				}
-				else SPD(playerid,56,1,"Тариф","{FFFFFF}Введите ваш тариф и слоган через запятую\n\n{9ACD32}- Тариф не менее $1 и не более $70\nСлоган не более 30-и символов","Ок", !"Отмена");
+				else SPD(playerid,56,1,"Тариф","{FFFFFF}Введите ваш тариф и слоган через запятую\n\n{9ACD32}- Тариф не менее $1 и не более $7000\nСлоган не более 30-и символов","Ок", !"Отмена");
 			}
 			return 1;
 		}
@@ -50856,7 +50867,7 @@ public: ServerTimer()
 			SCMALL(0x6495EDFF,"их на желаемый тобой{FFFFFF} бизнес, дом, аксессуар{6495ED} или на покупку каких нибудь безделушек.");
 			SCMALL(0x6495EDFF,"- Игроки со статусом{FFFFFF} VIP{6495ED} имеют большие возможности, подробнее /help [Преимущества VIP]");
 			SCMALL(0x6495EDFF,"- В магазине так-же можно приобрести редкие{FFFFFF} автомобили, аксессуары, воздушные шары{6495ED},");
-			format(global_str, 256, "  а так же предметы, которые выделяет тебя из толпы! Наш сайт: {ffffff}%s", Mode[CFG_Vk]);
+			format(global_str, 256, "  а так же предметы, которые выделяет тебя из толпы! Наш сайт: {ffffff}"Mode_Site"");//%s", Mode[CFG_Vk]);
 			SCMALL(0x6495EDFF, global_str);
 	    }
 		
@@ -53094,7 +53105,7 @@ stock UpdatePlayers()
 					}
 					//
 					if( ++ PI[playerid][pBeg][4] >= 40 && PI[playerid][pBeg][1])
-						GiveMoney(playerid, !PI[playerid][pBeg][3] ? 10:15, "получение с /beg"), PI[playerid][pBeg][4] = 0;
+						GiveMoney(playerid, !PI[playerid][pBeg][3] ? 100:150, "получение с /beg"), PI[playerid][pBeg][4] = 0;
 					
 					//
 					if(PI[playerid][pHeal] > 0)
@@ -57421,7 +57432,7 @@ cmd:showtatu(playerid)
 }
 cmd:beg(playerid)
 {
-    if PI[playerid][pLevel] > 4 *then
+    if PI[playerid][pLevel] > 10 *then
 		return false;
 		
     if !PI[playerid][pBeg][1] *then
@@ -57447,8 +57458,8 @@ cmd:beg(playerid)
 
         Streamer_Update(playerid);
 
-        SPD(playerid, 0, DIALOG_STYLE_MSGBOX, !"Псс Инфа!","  \n \n{FFFFFF}Вы начали попрошайничать деньги. Каждые 40 секунд вы будете получать по 10$.\
-		\nА если вы будете под руководством мафии, то сможете получать до 15$ в 40 секунд!\
+        SPD(playerid, 0, DIALOG_STYLE_MSGBOX, !"Псс Инфа!","  \n \n{FFFFFF}Вы начали попрошайничать деньги. Каждые 40 секунд вы будете получать по 100$.\
+		\nА если вы будете под руководством мафии, то сможете получать до 150$ в 40 секунд!\
 		\nДля того чтобы подключится к бизнесу мафии, достаточно найти одного их представителя\
 		\n \n{e8793e}Попрошайничать вы можете даже в афк, это даст вам возможность заработать деньги,\
 		\nпока вы занимаетесь делами в реальной жизни. Попрошайничать можно до 24 часов афк!\n", !"Понял", !"");
@@ -63621,7 +63632,7 @@ cmd:taxi(playerid, params[])
 	new carid = GetPlayerVehicleID(playerid);
 	if( PlayerJob[playerid] != JOB_TAXI)return SCM(playerid,COLOR_RED,!"[Ошибка] {FFFFFF}Вы не таксист!");
 	if(!IsATaxi(carid))return 0;
-	if(!TaxiTarif[playerid]) SPD(playerid,56,1,"Тариф","{FFFFFF}Введите ваш тариф и слоган через запятую\n\n{9ACD32}- Тариф не менее $1 и не более $70\nСлоган не более 30-и символов","Ок", !"Отмена");
+	if(!TaxiTarif[playerid]) SPD(playerid,56,1,"Тариф","{FFFFFF}Введите ваш тариф и слоган через запятую\n\n{9ACD32}- Тариф не менее $1 и не более $7000\nСлоган не более 30-и символов","Ок", !"Отмена");
 	else SCM(playerid,COLOR_RED,!"[Ошибка] {FFFFFF}Вы уже установили тариф!");
 	return 1;
 }
