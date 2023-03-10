@@ -31218,7 +31218,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							return SCM(playerid, COLOR_RED, !"[Ошибка] {FFFFFF}Вы далеко от игрока!");
 					    f(global_str, 300, "%s предложил %s положить деньги на депозит", PN(playerid), PN(para1));
 						ProxDetector(25.0, playerid, global_str, COLOR_PURPLE);
-						SPD(para1, 55, DIALOG_STYLE_INPUT, !"Введите сумму", !"\n\n{FFFFFF}Введите сумму от {B7D22C}10 000$ до 5 000 000$ {FFFFFF}для пополнения депозита\n\n[{FFF700}i] {FFFFFF}Пополнять депозит можно 1-ин раз в час!\n[{FFF700}i] {FFFFFF}После пополнения депозита, вы не сможете снять с него деньги,\nв течение 5-ти игровых часов!\n[{FFF700}i] {FFFFFF}Ежечасовой процент зависит от вашей влиятельности ((VIP))\n\n", !"Далее", !"Отмена");
+						SPD(para1, 55, DIALOG_STYLE_INPUT, !"Введите сумму", !"\n\n{FFFFFF}Введите сумму от {B7D22C}10 000$ до 500 000 000$ {FFFFFF}для пополнения депозита\n\n[{FFF700}i] {FFFFFF}Пополнять депозит можно 1-ин раз в час!\n[{FFF700}i] {FFFFFF}После пополнения депозита, вы не сможете снять с него деньги,\nв течение 5-ти игровых часов!\n[{FFF700}i] {FFFFFF}Ежечасовой процент зависит от вашей влиятельности ((VIP))\n\n", !"Далее", !"Отмена");
 					}
 					case 6:
 					{
@@ -31226,14 +31226,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							return SCM(playerid, COLOR_RED, !"[Ошибка] {FFFFFF}У этого человека нет банковской карты!");
 						if(!ProxDetectorS(3.0, playerid, para1, 1))
 							return SCM(playerid, COLOR_RED, !"[Ошибка] {FFFFFF}Вы далеко от игрока!");
-						if(PI[para1][pDepositOut])
-						{
-						    f(global_str, 325, "[Ошибка] {FFFFFF}Данному человеку еще нельзя снимать деньги с депозита, ему осталось %i часов!", PI[para1][pDepositOut]);
-							return SCM(playerid, COLOR_RED, global_str);
-						}
+						//if(PI[para1][pDepositOut])
+						//{
+						//    f(global_str, 325, "[Ошибка] {FFFFFF}Данному человеку еще нельзя снимать деньги с депозита, ему осталось %i часов!", PI[para1][pDepositOut]);
+						//	return SCM(playerid, COLOR_RED, global_str);
+						//}
 					    f(global_str, sizeof(global_str), "%s предложил %s забрать деньги с депозита", PN(playerid), PN(para1));
 						ProxDetector(25.0, playerid, global_str, COLOR_PURPLE);
-						SPD(para1, 57, DIALOG_STYLE_INPUT, !"Введите сумму", !"\n\n{FFFFFF}Введите сумму от {B7D22C}10 000$ до 5 000 000$ {FFFFFF}для получения денег со своего депозита.\n\n", !"Далее", !"Отмена");
+						SPD(para1, 57, DIALOG_STYLE_INPUT, !"Введите сумму", !"\n\n{FFFFFF}Введите сумму от {B7D22C}10 000$ до 500 000 000$ {FFFFFF}для получения денег со своего депозита.\n\n", !"Далее", !"Отмена");
 					}
 				}
 			}
@@ -33751,13 +33751,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 6:
 					{
-						if(PI[playerid][pDepositIn]) return SendBotMessage(playerid, !"Класть деньги на депозит, можно 1-ин раз в час!");
-						SPD(playerid, 55, DIALOG_STYLE_INPUT, !"Введите сумму", !"\n\n{FFFFFF}Введите сумму от {B7D22C}10 000$ до 5 000 000$ {FFFFFF}для пополнения депозита\n\n[{FFF700}i] {FFFFFF}Пополнять депозит можно 1-ин раз в час!\n[{FFF700}i] {FFFFFF}После пополнения депозита, вы не сможете снять с него деньги,\nв течение 5-ти игровых часов!\n[{FFF700}i] {FFFFFF}Ежечасовой процент зависит от вашей влиятельности ((VIP))\n\n", !"Далее", !"Отмена");
+						//if(PI[playerid][pDepositIn]) return SendBotMessage(playerid, !"Класть деньги на депозит, можно 1-ин раз в час!");
+						SPD(playerid, 55, DIALOG_STYLE_INPUT, !"Введите сумму", !"\n\n{FFFFFF}Введите сумму от {B7D22C}10 000$ до 500 000 000$ {FFFFFF}для пополнения депозита\n\n[{FFF700}i] {FFFFFF}Пополнять депозит можно 1-ин раз в час!\n[{FFF700}i] {FFFFFF}После пополнения депозита, вы не сможете снять с него деньги,\nв течение 5-ти игровых часов!\n[{FFF700}i] {FFFFFF}Ежечасовой процент зависит от вашей влиятельности ((VIP))\n\n", !"Далее", !"Отмена");
 					}
 					case 7:
 					{
-						if(PI[playerid][pDepositOut]) return SendBotMessage(playerid, !"Снимать деньги с депозита, можно\nчерез 5 часов, после последнего пополнения!");
-						SPD(playerid, 57, DIALOG_STYLE_INPUT, !"Введите сумму", !"\n\n{FFFFFF}Введите сумму от {B7D22C}10 000$ до 5 000 000$ {FFFFFF}для получения денег со своего депозита.\n\n", !"Далее", !"Отмена");
+						//if(PI[playerid][pDepositOut]) return SendBotMessage(playerid, !"Снимать деньги с депозита, можно\nчерез 5 часов, после последнего пополнения!");
+						SPD(playerid, 57, DIALOG_STYLE_INPUT, !"Введите сумму", !"\n\n{FFFFFF}Введите сумму от {B7D22C}10 000$ до 500 000 000$ {FFFFFF}для получения денег со своего депозита.\n\n", !"Далее", !"Отмена");
 					}
 					case 8:
 					{
@@ -33855,33 +33855,33 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		    if(!response)
 		        return ShowBankMenu(playerid);
 			if(!strlen(inputtextsave))
-			    return SPD(playerid, 55, DIALOG_STYLE_MSGBOX, !"Введите сумму", !"\n\n{FFFFFF}Введите сумму от {B7D22C}10 000$ до 5 000 000$ {FFFFFF}для пополнения депозита\n\n[{FFF700}i] {FFFFFF}Пополнять депозит можно 1-ин раз в час!\n[{FFF700}i] {FFFFFF}После пополнения депозита, вы не сможете снять с него деньги,\nв течение 5-ти игровых часов!\n[{FFF700}i] {FFFFFF}Ежечасовой процент зависит от вашей влиятельности ((VIP))\n", !"Далее", !"Отмена");
-		    if(PI[playerid][pDeposit] > 100000000)
-		        return SendBotMessage(playerid, !"На вашем депозитном счету, больше 100 миллионов,\n положить больше нельзя, дабы снять это ограничение вам нужно состоять в семье\nимеющийю улучшение 'Банковские махинации'");
+			    return SPD(playerid, 55, DIALOG_STYLE_MSGBOX, !"Введите сумму", !"\n\n{FFFFFF}Введите сумму от {B7D22C}10 000$ до 500 000 000$ {FFFFFF}для пополнения депозита\n\n[{FFF700}i] {FFFFFF}Пополнять депозит можно 1-ин раз в час!\n[{FFF700}i] {FFFFFF}После пополнения депозита, вы не сможете снять с него деньги,\nв течение 5-ти игровых часов!\n[{FFF700}i] {FFFFFF}Ежечасовой процент зависит от вашей влиятельности ((VIP))\n", !"Далее", !"Отмена");
+		    if(PI[playerid][pDeposit] > 900000000)
+		        return SendBotMessage(playerid, !"На вашем депозитном счету, больше 900 миллионов,\n положить больше нельзя, дабы снять это ограничение вам нужно состоять в семье\nимеющийю улучшение 'Банковские махинации'");
 			new
 			    money = strval(inputtextsave);
-			if(money >= 1 && PI[playerid][pMoney] >= money && money <= 5000000)
+			if(money >= 1 && PI[playerid][pMoney] >= money && money <= 500000000)
 			{
 				PI[playerid][pDeposit] += money;
 				GiveMoney(playerid, -money);
 				f(global_str, sizeof(global_str), "Вы положили на свой депозитный счет $%d", money);
 				SendBotMessage(playerid, global_str);
-				PI[playerid][pDepositIn] = 1;
-				PI[playerid][pDepositOut] = 5;
+				//PI[playerid][pDepositIn] = 1;
+				//PI[playerid][pDepositOut] = 5;
 				GameTextForPlayer(playerid, !"Successful", 0, 1);
 			}
 			else
-				SPD(playerid, 0, DIALOG_STYLE_MSGBOX, !"", !"\n\nУважаемый! Пытайтесь ввести все символы правильно!\nМинимальная сумма для пополнения {EE772D}10 000$\n{FFFFFF}Максимальная сумма для пополнения {EE772D}5 000 000$\n\n", !"Понял", !"");
+				SPD(playerid, 0, DIALOG_STYLE_MSGBOX, !"", !"\n\nУважаемый! Пытайтесь ввести все символы правильно!\nМинимальная сумма для пополнения {EE772D}10 000$\n{FFFFFF}Максимальная сумма для пополнения {EE772D}500 000 000$\n\n", !"Понял", !"");
 		}
 		case 57:
 		{
 		    if(!response)
 		        return ShowBankMenu(playerid);
 			if(!strlen(inputtextsave))
-			    return SPD(playerid, 57, DIALOG_STYLE_MSGBOX, !"Введите сумму", !"\n\n{FFFFFF}Введите сумму от {B7D22C}10 000$ до 5 000 000$ {FFFFFF}для получения денег со своего депозита.\n\n", !"Далее", !"Отмена");
+			    return SPD(playerid, 57, DIALOG_STYLE_MSGBOX, !"Введите сумму", !"\n\n{FFFFFF}Введите сумму от {B7D22C}10 000$ до 500 000 000$ {FFFFFF}для получения денег со своего депозита.\n\n", !"Далее", !"Отмена");
 			new
 			    money = strval(inputtextsave);
-			if(money >= 1 && PI[playerid][pMoney] >= money && money <= 5000000 && PI[playerid][pDeposit] >= money)
+			if(money >= 1 && PI[playerid][pMoney] >= money && money <= 500000000 && PI[playerid][pDeposit] >= money)
 			{
 				PI[playerid][pDeposit] -= money;
 				GiveMoney(playerid, money);
@@ -36662,7 +36662,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 case 1:
                 {
                     if(!IsACop(playerid) || !TeamDuty{playerid}) return 0;
-                    if(PI[playerid][pRank] < 6)return SPD(playerid, 0, DIALOG_STYLE_MSGBOX, !"", !"{A31919}\n\nДоступ к гардеробу S.W.A.T. имеют доступ только работники выше 6-го ранга!\n\n", !"Принять", !"");
+                    if(PI[playerid][pRank] < 4)return SPD(playerid, 0, DIALOG_STYLE_MSGBOX, !"", !"{A31919}\n\nДоступ к гардеробу S.W.A.T. имеют доступ только работники выше 4-го ранга!\n\n", !"Принять", !"");
                     if(GetPlayerSkin(playerid) == 285) return SPD(playerid, 0, DIALOG_STYLE_MSGBOX, !"", !"{A31919}\n\nВы и так уже одеты в форму S.W.A.T.\n\n", !"Принять", !"");
                     SetPlayerSkinEx(playerid, 285);
 
@@ -64582,8 +64582,8 @@ cmd:d(playerid, params[])
 	if(!IsAtFrakcia(playerid, 1))
 		return SCM(playerid, COLOR_GREY, !"Вы не уполномочены писать в государственный чат");
 
-	if(PI[playerid][pRank] < 5)
-		return SCM(playerid, COLOR_RED, !"Писать можно с 5-го ранга!");
+	if(PI[playerid][pRank] < 4)
+		return SCM(playerid, COLOR_RED, !"Писать можно с 4-го ранга!");
 
     if(PI[playerid][pMuteTime] > 0)
 		return SendMuteMessage(playerid);
@@ -73321,6 +73321,27 @@ cmd:giveazruball(playerid, params[]) {
 	return true;
 }
 */
+cmd:bonusall(playerid, params[])
+{
+	if !CheckAdm(playerid, 7) *then return false;
+
+	foreach(Player, i)
+	{
+		if(IsPlayerLogged{i})
+		{
+			GiveDonate(i, 500);
+			AddItem(playerid, 615, 10000);
+
+		}
+	}
+
+	f(global_str, 125,"Администратор %s выдал всем игрокам 10к евро + 500az.", PN(playerid));
+	SCMALL(COLOR_RED, global_str);
+
+	amlf("Администратор <a href=../pages/user?name=%s>%s</a> выдал всем игрокам 10к евро + 500az!(/bonusall)", 5, "", "", PN(playerid), PN(playerid));
+
+	return true;
+}
 //------------------------------------------------------------------------------
 cmd:givemyrub(playerid, params[])
 {
