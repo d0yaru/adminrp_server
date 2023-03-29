@@ -3184,7 +3184,12 @@ enum tInfo
 	tItem[30],
 	tItemCount[30],
 	tItemLevel[30],
-	tItemProc[30]
+	tItemProc[30],
+	tItemZash[30],
+	tItemRegen[30],
+	tItemYron[30],
+	tItemYdacha[30],
+	tItemMaxhp[30]
 };
 new TrunkInfo[MAX_VEHICLES][tInfo];
 
@@ -5282,7 +5287,12 @@ enum musorInfo
 	mItem[150],
 	mItemCount[150],
 	mItemLevel[150],
-	mItemProc[150]
+	mItemProc[150],
+	mItemZash[150],
+	mItemRegen[150],
+	mItemYron[150],
+	mItemYdacha[150],
+	mItemMaxhp[150]
 };
 new MusorInfo[MAX_MUSORS][musorInfo];
 
@@ -5566,7 +5576,7 @@ enum _temp_
 new pTemp[MAX_PLAYERS][_temp_];
 
 new PlayerModification[MAX_PLAYERS],
-	AksSlot[MAX_PLAYERS][3][8],
+	AksSlot[MAX_PLAYERS][8][8],// [заточка][слот]
 	ZapretDice[MAX_PLAYERS],
 	KostiName[MAX_PLAYERS],
 	KostiMoney[MAX_PLAYERS],
@@ -7358,7 +7368,7 @@ new SettingData[MAX_PLAYERS][setting_data] = {{1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 
 #include ../library/data/family // Данные фамы
 
 // INVENTORY DATA NEWS
-new Inventory[MAX_PLAYERS][4][108],
+new Inventory[MAX_PLAYERS][9][108],
 	PickInvent[MAX_PLAYERS],
 	PickInventSlot[MAX_PLAYERS],
 
@@ -9124,6 +9134,11 @@ enum hInfo
 	hItemCount[90],
 	hItemLevel[90],
 	hItemProc[90],
+	hItemZash[90],
+	hItemRegen[90],
+	hItemYron[90],
+	hItemYdacha[90],
+	hItemMaxhp[90],
 	hBar,
 	hPodval,
 	hSkin[5],
@@ -17469,9 +17484,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			}
 		}
 	}
-	ShowDamageTextDrawForPlayer(playerid, damagedid, weaponid, amount);
-    f(global_str, 12, "- %.2f HP", Float:amount),
-    SetPlayerChatBubble(damagedid, global_str, COLOR_OLDRED, 30.0, 5000);
+
     return 1;
 }
 //------------------------------------------------------------------------------
@@ -17480,20 +17493,25 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 	if !IsPlayerLogged{playerid} *then return false;
 
 	new Float:Health, Float:AksPerfect;
+
+	GetPlayerHealth(playerid, Health);
+	// SCMF(issuerid, -1, "[start] Урон:[%f] Сила акса:[%f] Здоровье:[%f]", amount, float(GetAccessoryUpdate(AksSlot[issuerid][1][2], AksSlot[issuerid][0][2])+GetAccessoryUpdate2(issuerid, 5)), Health);
+
 	//--------------------------------------------------------------------------
 	// Урон: 2 и 3 слот
 	if !(issuerid == INVALID_PLAYER_ID) *then
 	{
 		if GetAccessoryUpdate(AksSlot[issuerid][1][2], AksSlot[playerid][0][2]) *then
 		{
-			AksPerfect = float(GetAccessoryUpdate(AksSlot[issuerid][1][2], AksSlot[playerid][0][2]));
+			AksPerfect = float(GetAccessoryUpdate(AksSlot[issuerid][1][2], AksSlot[issuerid][0][2]));
 			amount += AksPerfect;
 		}
 		if GetAccessoryUpdate(AksSlot[issuerid][1][3], AksSlot[playerid][0][3]) *then
 		{
-			AksPerfect = float(GetAccessoryUpdate(AksSlot[issuerid][1][3], AksSlot[playerid][0][3]));
+			AksPerfect = float(GetAccessoryUpdate(AksSlot[issuerid][1][3], AksSlot[issuerid][0][3]));
 			amount += AksPerfect;
 		}
+		amount += float(GetAccessoryUpdate2(issuerid, 5));// с нашивок
 	}
 	//--------------------------------------------------------------------------
 	if !(issuerid == INVALID_PLAYER_ID) *then
@@ -17502,14 +17520,16 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		// Защита: 1 и 4 слот
 		if GetAccessoryUpdate(AksSlot[playerid][1][1], AksSlot[playerid][0][1]) *then
 		{
-			AksPerfect = amount * (float(GetAccessoryUpdate(AksSlot[playerid][1][1], AksSlot[playerid][0][1]) * 2) / 100);
+			AksPerfect = amount * (float(GetAccessoryUpdate(AksSlot[playerid][1][1], AksSlot[playerid][0][1]) * 2)) / 100;
 			amount -= AksPerfect;
 		}
 		if GetAccessoryUpdate(AksSlot[playerid][1][4], AksSlot[playerid][0][4]) *then
 		{
-			AksPerfect = amount * (float(GetAccessoryUpdate(AksSlot[playerid][1][4], AksSlot[playerid][0][4]) * 2) / 100);
+			AksPerfect = amount * (float(GetAccessoryUpdate(AksSlot[playerid][1][4], AksSlot[playerid][0][4]) * 2)) / 100;
 			amount -= AksPerfect;
 		}
+		AksPerfect = amount * (float(GetAccessoryUpdate2(playerid, 3) * 2)) / 100;
+		amount -= AksPerfect;// с нашивок
 		//----------------------------------------------------------------------
 		if PI[playerid][pArmour] > 0 && weaponid <= 46 *then {
 
@@ -17565,6 +17585,11 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 	    }
 		SetPlayerSkills(issuerid);
 	}
+	// SCMF(issuerid, -1, "[end] Урон:[%f] Защита:[] Здоровье:[%f]", amount, Health);
+
+	ShowDamageTextDrawForPlayer(playerid, issuerid, weaponid, amount);
+	f(global_str, 12, "- %.2f HP", Float:amount),
+    SetPlayerChatBubble(playerid, global_str, COLOR_OLDRED, 30.0, 5000);
 	return 1;
 }
 //------------------------------------------------------------------------------
@@ -23143,9 +23168,112 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 	DeletePVar(playerid, "DialogOpen");
 	new cmdsid = GetPVarInt(playerid, "CmdsID");
+	//--------------------------------------------------------------------------
 	
+	//--------------------------------------------------------------------------
 	switch dialogid do
 	{
+		//----------------------------------------------------------------------
+		// Нашивка на аксессуар
+		case 7001:
+        {
+			new nashivka;
+
+			switch(Inventory[playerid][0][PickInvent[playerid]])
+			{
+				case 2201: nashivka = 3;
+				case 2202: nashivka = 4;
+				case 2203: nashivka = 5;
+				case 2204: nashivka = 6;
+				case 2205: nashivka = 7;
+			}
+            if(response)
+            {
+                switch(listitem)
+                {
+                case 0:
+                    {
+						if(AksSlot[playerid][0][listitem])
+						{
+							AksSlot[playerid][nashivka][listitem] = Inventory[playerid][2][PickInvent[playerid]];
+							ClearItem(playerid, PickInvent[playerid], 1);
+							SCMF(playerid, -1, ">> Вы применили нашивку [+%d], на: {B83434}%s", AksSlot[playerid][nashivka][listitem], ItemsInfo[AksSlot[playerid][0][listitem]][ItemName2]);
+						}
+						else SCM(playerid, -1, "[Ошибка] Выбранный слот пустой!");
+                    }
+                case 1:
+                    {
+						if(AksSlot[playerid][0][listitem])
+						{
+							AksSlot[playerid][nashivka][listitem] = Inventory[playerid][2][PickInvent[playerid]];
+							ClearItem(playerid, PickInvent[playerid], 1);
+							SCMF(playerid, -1, ">> Вы применили нашивку [+%d], на: {B83434}%s", AksSlot[playerid][nashivka][listitem], ItemsInfo[AksSlot[playerid][0][listitem]][ItemName2]);
+						}
+						else SCM(playerid, -1, "[Ошибка] Выбранный слот пустой!");
+                    }
+                case 2:
+                    {
+						if(AksSlot[playerid][0][listitem])
+						{
+							AksSlot[playerid][nashivka][listitem] = Inventory[playerid][2][PickInvent[playerid]];
+							ClearItem(playerid, PickInvent[playerid], 1);
+							SCMF(playerid, -1, ">> Вы применили нашивку [+%d], на: {B83434}%s", AksSlot[playerid][nashivka][listitem], ItemsInfo[AksSlot[playerid][0][listitem]][ItemName2]);
+						}
+						else SCM(playerid, -1, "[Ошибка] Выбранный слот пустой!");
+                    }
+                 case 3:
+                    {
+						if(AksSlot[playerid][0][listitem])
+						{
+							AksSlot[playerid][nashivka][listitem] = Inventory[playerid][2][PickInvent[playerid]];
+							ClearItem(playerid, PickInvent[playerid], 1);
+							SCMF(playerid, -1, ">> Вы применили нашивку [+%d], на: {B83434}%s", AksSlot[playerid][nashivka][listitem], ItemsInfo[AksSlot[playerid][0][listitem]][ItemName2]);
+						}
+						else SCM(playerid, -1, "[Ошибка] Выбранный слот пустой!");
+                    }
+                case 4:
+                    {
+						if(AksSlot[playerid][0][listitem])
+						{
+							AksSlot[playerid][nashivka][listitem] = Inventory[playerid][2][PickInvent[playerid]];
+							ClearItem(playerid, PickInvent[playerid], 1);
+							SCMF(playerid, -1, ">> Вы применили нашивку [+%d], на: {B83434}%s", AksSlot[playerid][nashivka][listitem], ItemsInfo[AksSlot[playerid][0][listitem]][ItemName2]);
+						}
+						else SCM(playerid, -1, "[Ошибка] Выбранный слот пустой!");
+                    }
+                 case 5:
+                    {
+						if(AksSlot[playerid][0][listitem])
+						{
+							AksSlot[playerid][nashivka][listitem] = Inventory[playerid][2][PickInvent[playerid]];
+							ClearItem(playerid, PickInvent[playerid], 1);
+							SCMF(playerid, -1, ">> Вы применили нашивку [+%d], на: {B83434}%s", AksSlot[playerid][nashivka][listitem], ItemsInfo[AksSlot[playerid][0][listitem]][ItemName2]);
+						}
+						else SCM(playerid, -1, "[Ошибка] Выбранный слот пустой!");
+                    }
+                 case 6:
+                    {
+						if(AksSlot[playerid][0][listitem])
+						{
+							AksSlot[playerid][nashivka][listitem] = Inventory[playerid][2][PickInvent[playerid]];
+							ClearItem(playerid, PickInvent[playerid], 1);
+							SCMF(playerid, -1, ">> Вы применили нашивку [+%d], на: {B83434}%s", AksSlot[playerid][nashivka][listitem], ItemsInfo[AksSlot[playerid][0][listitem]][ItemName2]);
+						}
+						else SCM(playerid, -1, "[Ошибка] Выбранный слот пустой!");
+                    }
+                case 7:
+                    {
+						if(AksSlot[playerid][0][listitem])
+						{
+							AksSlot[playerid][nashivka][listitem] = Inventory[playerid][2][PickInvent[playerid]];
+							ClearItem(playerid, PickInvent[playerid], 1);
+							SCMF(playerid, -1, ">> Вы применили нашивку [+%d], на: {B83434}%s", AksSlot[playerid][nashivka][listitem], ItemsInfo[AksSlot[playerid][0][listitem]][ItemName2]);
+						}
+						else SCM(playerid, -1, "[Ошибка] Выбранный слот пустой!");
+                    }
+                }
+            }
+        }
 	    //----------------------------------------------------------------------
 	    // setcmd
 	    case 15444:
@@ -24458,7 +24586,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					Inventory[playerid][0][0] = 313;
 					Inventory[playerid][1][0] = 1;
-					Inventory[playerid][2][0] = Inventory[playerid][3][0] = 0;
+					Inventory[playerid][2][0] =
+					Inventory[playerid][3][0] =
+					Inventory[playerid][4][0] =
+					Inventory[playerid][5][0] =
+					Inventory[playerid][6][0] =
+					Inventory[playerid][7][0] =
+					Inventory[playerid][8][0] = 0;
 
 					for new i = 1; i < PI[playerid][pInvCell]; i++ do ClearItem(playerid, i, Inventory[playerid][1][i]);
 					SCM(playerid,-1,!"Вы успешно очистили себе инвентарь!");
@@ -27697,7 +27831,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					Inventory[playerid][0][slot] =
 					Inventory[playerid][1][slot] =
 					Inventory[playerid][2][slot] =
-					Inventory[playerid][3][slot] = 0;
+					Inventory[playerid][3][slot] =
+					Inventory[playerid][4][slot] =
+					Inventory[playerid][5][slot] =
+					Inventory[playerid][6][slot] =
+					Inventory[playerid][7][slot] =
+					Inventory[playerid][8][slot] = 0;
 				}
 			}
 
@@ -40650,7 +40789,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 					amlf("Игрок <a href=../pages/user?id=%d>%s</a> взял из шкафа %d предмет инвентаря %s (id:%d) в кол-во %d", 0, "", "", PI[playerid][pID], PN(playerid), houseid, ItemsInfo[HouseInfo[houseid][hItem][id]][ItemName2], HouseInfo[houseid][hItem][id], count);
 
-					if HouseInfo[houseid][hItemCount][id] <= 0 *then HouseInfo[houseid][hItem][id]  = HouseInfo[houseid][hItemCount][id] = HouseInfo[houseid][hItemLevel][id] = HouseInfo[houseid][hItemProc][id] = 0;
+					if HouseInfo[houseid][hItemCount][id] <= 0 *then HouseInfo[houseid][hItem][id]  = HouseInfo[houseid][hItemCount][id] = HouseInfo[houseid][hItemLevel][id] = HouseInfo[houseid][hItemProc][id] = HouseInfo[houseid][hItemZash][id] = HouseInfo[houseid][hItemRegen][id] = HouseInfo[houseid][hItemYron][id] = HouseInfo[houseid][hItemYdacha][id] = HouseInfo[houseid][hItemMaxhp][id] = 0;
 			
 					OtherInventSlotUpdateAll(houseid, 1, HouseInfo[houseid][hItem][id], PickInventSlot[playerid], HouseInfo[houseid][hItemCount][id], id);
 
@@ -45320,9 +45459,9 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			    			if !HouseInfo[id][hItem][j] || !HouseInfo[id][hItemCount][j] *then return 0;
 							else if HouseInfo[id][hItemCount][j] == 1 *then
 							{
-								AddItem(playerid, HouseInfo[id][hItem][j], 1, HouseInfo[id][hItemLevel][j], HouseInfo[id][hItemProc][j]);
+								AddItem(playerid, HouseInfo[id][hItem][j], 1, HouseInfo[id][hItemLevel][j], HouseInfo[id][hItemProc][j], HouseInfo[id][hItemZash][j], HouseInfo[id][hItemRegen][j], HouseInfo[id][hItemYron][j], HouseInfo[id][hItemYdacha][j], HouseInfo[id][hItemMaxhp][j]);
 								amlf("Игрок <a href=../pages/user?id=%d>%s</a> взял из шкафа %d предмет инвентаря %s (id:%d) в кол-во %d", 0, "", "", PI[playerid][pID], PN(playerid), id, ItemsInfo[HouseInfo[id][hItem][j]][ItemName2], HouseInfo[id][hItem][j], 1);
-								HouseInfo[id][hItem][j]  = HouseInfo[id][hItemCount][j] = HouseInfo[id][hItemLevel][j]  = HouseInfo[id][hItemProc][j] = 0;
+								HouseInfo[id][hItem][j]  = HouseInfo[id][hItemCount][j] = HouseInfo[id][hItemLevel][j] = HouseInfo[id][hItemProc][j] = HouseInfo[id][hItemZash][j] = HouseInfo[id][hItemRegen][j] = HouseInfo[id][hItemYron][j] = HouseInfo[id][hItemYdacha][j] = HouseInfo[id][hItemMaxhp][j] = 0;
 								OtherInventSlotUpdateAll(id, 1, HouseInfo[id][hItem][j], i, HouseInfo[id][hItemCount][j], j);
 								SaveItemHouse(id);
 							}
@@ -45339,9 +45478,9 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 							else if !MusorInfo[id][mItem][j] || !MusorInfo[id][mItemCount][j] *then return 0;
 							else if MusorInfo[id][mItemCount][j] == 1 *then
 							{
-								AddItem(playerid, MusorInfo[id][mItem][j], 1, MusorInfo[id][mItemLevel][j], MusorInfo[id][mItemProc][j]);
+								AddItem(playerid, MusorInfo[id][mItem][j], 1, MusorInfo[id][mItemLevel][j], MusorInfo[id][mItemProc][j], MusorInfo[id][mItemZash][j], MusorInfo[id][mItemRegen][j], MusorInfo[id][mItemYron][j], MusorInfo[id][mItemYdacha][j], MusorInfo[id][mItemMaxhp][j]);
 								amlf("Игрок <a href=../pages/user?id=%d>%s</a> взял из мусорки %d предмет инвентаря %s (id:%d) в кол-во %d", 0, "", "", PI[playerid][pID], PN(playerid), id, ItemsInfo[MusorInfo[id][mItem][j]][ItemName2], MusorInfo[id][mItem][j], 1);
-								MusorInfo[id][mItem][j] = MusorInfo[id][mItemCount][j] = MusorInfo[id][mItemLevel][j] = MusorInfo[id][mItemProc][j] = 0;
+								MusorInfo[id][mItem][j] = MusorInfo[id][mItemCount][j] = MusorInfo[id][mItemLevel][j] = MusorInfo[id][mItemProc][j] = MusorInfo[id][mItemZash][j] = MusorInfo[id][mItemRegen][j] = MusorInfo[id][mItemYron][j] = MusorInfo[id][mItemYdacha][j] = MusorInfo[id][mItemMaxhp][j] = 0;
 								OtherInventSlotUpdateAll(id, 2, MusorInfo[id][mItem][j], i, MusorInfo[id][mItemCount][j], j, 0);
 							}
 							else if MusorInfo[id][mItemCount][j] > 1 *then
@@ -45360,9 +45499,9 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 							else if !TrunkInfo[id][tItem][j] || !TrunkInfo[id][tItemCount][j] *then return false;
 							else if TrunkInfo[id][tItemCount][j] == 1 *then
 							{
-								AddItem(playerid, TrunkInfo[id][tItem][j], 1, TrunkInfo[id][tItemLevel][j], TrunkInfo[id][tItemProc][j]);
+								AddItem(playerid, TrunkInfo[id][tItem][j], 1, TrunkInfo[id][tItemLevel][j], TrunkInfo[id][tItemProc][j], TrunkInfo[id][tItemZash][j], TrunkInfo[id][tItemRegen][j], TrunkInfo[id][tItemYron][j], TrunkInfo[id][tItemYdacha][j], TrunkInfo[id][tItemMaxhp][j]);
 								amlf("Игрок <a href=../pages/user?id=%d>%s</a> взял из багажника %d предмет инвентаря %s (id:%d) в кол-во %d", 0, "", "", PI[playerid][pID], PN(playerid), id, ItemsInfo[TrunkInfo[id][tItem][j]][ItemName2], TrunkInfo[id][tItem][j], 1);
-								TrunkInfo[id][tItem][j] = TrunkInfo[id][tItemCount][j] = TrunkInfo[id][tItemLevel][j] = TrunkInfo[id][tItemProc][j] = 0;
+								TrunkInfo[id][tItem][j] = TrunkInfo[id][tItemCount][j] = TrunkInfo[id][tItemLevel][j] = TrunkInfo[id][tItemProc][j] = TrunkInfo[id][tItemZash][j] = TrunkInfo[id][tItemRegen][j] = TrunkInfo[id][tItemYron][j] = TrunkInfo[id][tItemYdacha][j] = TrunkInfo[id][tItemMaxhp][j] = 0;
 								OtherInventSlotUpdateAll(id, 3, TrunkInfo[id][tItem][j], i, TrunkInfo[id][tItemCount][j], j, TrunkInfo[id][tItemLevel][j]);
 								if IsAOwnableCar(id) *then SaveTrunk(id);
 							}
@@ -45450,7 +45589,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 								if HouseEntered[playerid] == -1 *then return OtherInvClose(playerid);
 								else if !IsValidItem(Inventory[playerid][0][j]) *then return SCM(playerid, COLOR_RED, "[Ошибка]{FFFFFF} Данный предмет нельзя передать!");
 								else if Inventory[playerid][1][j] == 1 *then 
-									AddItemHouse(playerid, HouseEntered[playerid], Inventory[playerid][0][j], 1, Inventory[playerid][2][j], Inventory[playerid][3][j]),
+									AddItemHouse(playerid, HouseEntered[playerid], Inventory[playerid][0][j], 1, Inventory[playerid][2][j], Inventory[playerid][3][j], Inventory[playerid][4][j], Inventory[playerid][5][j], Inventory[playerid][6][j], Inventory[playerid][7][j], Inventory[playerid][8][j]),
 									ClearItem(playerid, j, 1),
 									SaveItemHouse(HouseEntered[playerid]);
 
@@ -45465,7 +45604,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 								if musorka[playerid] == -1 *then return OtherInvClose(playerid);
 								else if !IsValidItem(Inventory[playerid][0][j]) *then return SCM(playerid, COLOR_RED, "[Ошибка]{FFFFFF} Данный предмет нельзя передать!");
 								else if Inventory[playerid][1][j] == 1 *then 
-									AddItemMusor(playerid, musorka[playerid], Inventory[playerid][0][j], 1, Inventory[playerid][2][j], Inventory[playerid][3][j]),
+									AddItemMusor(playerid, musorka[playerid], Inventory[playerid][0][j], 1, Inventory[playerid][2][j], Inventory[playerid][3][j], Inventory[playerid][4][j], Inventory[playerid][5][j], Inventory[playerid][6][j], Inventory[playerid][7][j], Inventory[playerid][8][j]),
 									ClearItem(playerid, j, 1);
 
 								else if Inventory[playerid][1][j] > 1 *then
@@ -45480,7 +45619,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 								else if !IsValidItem(Inventory[playerid][0][j]) *then return SCM(playerid, COLOR_RED, "[Ошибка]{FFFFFF} Данный предмет нельзя передать!");
 								else if Inventory[playerid][1][j] == 1 *then
 								{
-									AddItemTrunk(playerid, trunk[playerid], Inventory[playerid][0][j], 1, Inventory[playerid][2][j], Inventory[playerid][3][j]);
+									AddItemTrunk(playerid, trunk[playerid], Inventory[playerid][0][j], 1, Inventory[playerid][2][j], Inventory[playerid][3][j], Inventory[playerid][4][j], Inventory[playerid][5][j], Inventory[playerid][6][j], Inventory[playerid][7][j], Inventory[playerid][8][j]);
 									ClearItem(playerid, j, 1);
 									if IsAOwnableCar(trunk[playerid]) *then SaveTrunk(trunk[playerid]);
 								}
@@ -45584,7 +45723,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 								
 								ChangeItemPos(playerid, j, ID);
 
-								Inventory[playerid][0][ID] = Inventory[playerid][1][ID] = Inventory[playerid][2][ID] = Inventory[playerid][3][ID] = 0;
+								Inventory[playerid][0][ID] = Inventory[playerid][1][ID] = Inventory[playerid][2][ID] = Inventory[playerid][3][ID] = Inventory[playerid][4][ID] = Inventory[playerid][5][ID] = Inventory[playerid][6][ID] = Inventory[playerid][7][ID] = Inventory[playerid][8][ID] = 0;
 
 								PlayerTextDrawColor(playerid, KletkaText[playerid][slot], 0xAAAAAAFF);
 								PlayerTextDrawColor(playerid, KletkaText[playerid][i], 0xAAAAAAFF);
@@ -45877,13 +46016,13 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 					if !(slot[0] == -1) *then
 						item[0] = Inventory[playerid][0][slot[0]],
-						AddItem(target, item[0], TradeInfo[playerid][tradeItemCount][idx], Inventory[playerid][2][slot[0]], Inventory[playerid][3][slot[0]]),
+						AddItem(target, item[0], TradeInfo[playerid][tradeItemCount][idx], Inventory[playerid][2][slot[0]], Inventory[playerid][3][slot[0]], Inventory[playerid][4][slot[0]], Inventory[playerid][5][slot[0]], Inventory[playerid][6][slot[0]], Inventory[playerid][7][slot[0]], Inventory[playerid][8][slot[0]]),
 						ClearItem(playerid, slot[0], TradeInfo[playerid][tradeItemCount][idx]),
 						amlf("Игрок <a href=../pages/user?id=%d>%s</a> передал <a href=../pages/user?id=%d>%s</a> предмет инвентаря %s (id:%d) в кол-во %d", 0, "", "", PI[playerid][pID], PN(playerid), PI[target][pID], PN(target), ItemsInfo[item[0]][ItemName2], item[0], TradeInfo[playerid][tradeItemCount][idx]);
 					
 					if !(slot[1] == -1) *then
 						item[1] = Inventory[target][0][slot[1]],
-						AddItem(playerid, item[1], TradeInfo[target][tradeItemCount][idx], Inventory[target][2][slot[1]], Inventory[target][3][slot[1]]),
+						AddItem(playerid, item[1], TradeInfo[target][tradeItemCount][idx], Inventory[target][2][slot[1]], Inventory[target][3][slot[1]], Inventory[target][4][slot[1]], Inventory[target][5][slot[1]], Inventory[target][6][slot[1]], Inventory[target][7][slot[1]], Inventory[target][8][slot[1]]),
 						ClearItem(target, slot[1], TradeInfo[target][tradeItemCount][idx]),
 						amlf("Игрок <a href=../pages/user?id=%d>%s</a> передал <a href=../pages/user?id=%d>%s</a> предмет инвентаря %s (id:%d) в кол-во %d", 0, "", "", PI[target][pID], PN(target), PI[playerid][pID], PN(playerid), ItemsInfo[item[1]][ItemName2], item[1], TradeInfo[target][tradeItemCount][idx]);
 				}
@@ -48895,10 +49034,25 @@ public: OnPlayerLoadData(playerid)
     cache_get_row(0, 172, global_str), Int_UnPackMassive(global_str, Inventory[playerid][1]); // Кол-во предметов
     cache_get_row(0, 182, global_str), Int_UnPackMassive(global_str, Inventory[playerid][2]); // Заточка
     cache_get_row(0, 183, global_str), Int_UnPackMassive(global_str, Inventory[playerid][3]); // Процент прочности
-	
+	//--------------------------------------------------------------------------
+	// Нашивка на аксессуар
+	cache_get_row(0, 238, global_str), Int_UnPackMassive(global_str, Inventory[playerid][4]); // защита
+    cache_get_row(0, 239, global_str), Int_UnPackMassive(global_str, Inventory[playerid][5]); // регенерация
+    cache_get_row(0, 240, global_str), Int_UnPackMassive(global_str, Inventory[playerid][6]); // урон
+    cache_get_row(0, 241, global_str), Int_UnPackMassive(global_str, Inventory[playerid][7]); // удача
+	cache_get_row(0, 242, global_str), Int_UnPackMassive(global_str, Inventory[playerid][8]); // max hp
+	//--------------------------------------------------------------------------
     cache_get_row(0, 173, global_str), Int_UnPackMassive(global_str, AksSlot[playerid][0]);
     cache_get_row(0, 189, global_str), Int_UnPackMassive(global_str, AksSlot[playerid][1]);
     cache_get_row(0, 162, global_str), Int_UnPackMassive(global_str, AksSlot[playerid][2]);
+	//--------------------------------------------------------------------------
+	// Нашивка на аксессуар
+	cache_get_row(0, 243, global_str), Int_UnPackMassive(global_str, AksSlot[playerid][3]); // защита
+    cache_get_row(0, 244, global_str), Int_UnPackMassive(global_str, AksSlot[playerid][4]); // регенерация
+    cache_get_row(0, 245, global_str), Int_UnPackMassive(global_str, AksSlot[playerid][5]); // урон
+    cache_get_row(0, 246, global_str), Int_UnPackMassive(global_str, AksSlot[playerid][6]); // удача
+	cache_get_row(0, 247, global_str), Int_UnPackMassive(global_str, AksSlot[playerid][7]); // max hp
+	//--------------------------------------------------------------------------
 	cache_get_row(0, 133, global_str), Int_UnPackMassive(global_str, QuickMenu[playerid]);
 	cache_get_row(0, 155, global_str), Int_UnPackMassive(global_str, UpgradeSlot[playerid]);
 	cache_get_row(0, 135, global_str), Int_UnPackMassive(global_str, Int);
@@ -53265,9 +53419,11 @@ stock MinuteTimer()
 		GetPlayerHealth(playerid, Health);
 		//----------------------------------------------------------------------
 		// Регенерация: 0 слот
-		if GetAccessoryUpdate(AksSlot[playerid][1][0], AksSlot[playerid][0][0]) && Health < 100.0 *then
+		if GetAccessoryUpdate2(playerid, 4) && Health < 100.0 *then
 		{
-			UpdatePlayerHealth(playerid, Health + GetAccessoryUpdate(AksSlot[playerid][1][0], AksSlot[playerid][0][0]));
+			f(global_str, 12, "+ %.0f HP", float(GetAccessoryUpdate(AksSlot[playerid][1][0], AksSlot[playerid][0][0]) + GetAccessoryUpdate2(playerid, 4)));
+			GameTextForPlayer(playerid, global_str, 0, 1);
+			UpdatePlayerHealth(playerid, Health + GetAccessoryUpdate(AksSlot[playerid][1][0], AksSlot[playerid][0][0]) + GetAccessoryUpdate2(playerid, 4));// с нашивок
 		}
 		//----------------------------------------------------------------------
 	}
@@ -53284,6 +53440,11 @@ stock GetAccessoryUpdate(level, id)
 	}
 	
 	return 0;
+}
+//------------------------------------------------------------------------------
+stock GetAccessoryUpdate2(playerid, nashivka)
+{
+	return AksSlot[playerid][nashivka][0]+AksSlot[playerid][nashivka][1]+AksSlot[playerid][nashivka][2]+AksSlot[playerid][nashivka][3]+AksSlot[playerid][nashivka][4]+AksSlot[playerid][nashivka][5]+AksSlot[playerid][nashivka][6]+AksSlot[playerid][nashivka][7];
 }
 //------------------------------------------------------------------------------
 stock SetBumSkin(playerid)
@@ -53743,10 +53904,10 @@ stock ShowStats(playerid, giveplayerid)
 	PI[giveplayerid][pWanted],
 	PI[giveplayerid][pZKP],
 	
-	GetAccessoryUpdate(AksSlot[playerid][1][1], AksSlot[playerid][0][1])+GetAccessoryUpdate(AksSlot[playerid][1][4], AksSlot[playerid][0][4]),
-	GetAccessoryUpdate(AksSlot[playerid][1][0], AksSlot[playerid][0][0]),
-	GetAccessoryUpdate(AksSlot[playerid][1][2], AksSlot[playerid][0][2])+GetAccessoryUpdate(AksSlot[playerid][1][3], AksSlot[playerid][0][3]),
-	GetAccessoryUpdate(AksSlot[playerid][1][5], AksSlot[playerid][0][5]),
+	GetAccessoryUpdate(AksSlot[playerid][1][1], AksSlot[playerid][0][1])+GetAccessoryUpdate(AksSlot[playerid][1][4], AksSlot[playerid][0][4])+GetAccessoryUpdate2(playerid, 3),
+	GetAccessoryUpdate(AksSlot[playerid][1][0], AksSlot[playerid][0][0])+GetAccessoryUpdate2(playerid, 4),
+	GetAccessoryUpdate(AksSlot[playerid][1][2], AksSlot[playerid][0][2])+GetAccessoryUpdate(AksSlot[playerid][1][3], AksSlot[playerid][0][3])+GetAccessoryUpdate2(playerid, 5),
+	GetAccessoryUpdate(AksSlot[playerid][1][5], AksSlot[playerid][0][5])+GetAccessoryUpdate2(playerid, 6),
 
 	PI[giveplayerid][pWarns],
 	PI[giveplayerid][pAllRepl], str, (!PI[giveplayerid][pBankPass]) ? ("Не имеется"):(" Имеется "));
@@ -55170,6 +55331,11 @@ stock LoadHouses()
 	    cache_get_field_content(i, "ItemsKolvo", global_str), Int_UnPackMassive(global_str, HouseInfo[ID][hItemCount]);
 	    cache_get_field_content(i, "ItemsLevel", global_str), Int_UnPackMassive(global_str, HouseInfo[ID][hItemLevel]);
 	    cache_get_field_content(i, "ItemsProc", global_str), Int_UnPackMassive(global_str, HouseInfo[ID][hItemProc]);
+		cache_get_field_content(i, "ItemsZash", global_str), Int_UnPackMassive(global_str, HouseInfo[ID][hItemZash]);
+		cache_get_field_content(i, "ItemsRegen", global_str), Int_UnPackMassive(global_str, HouseInfo[ID][hItemRegen]);
+		cache_get_field_content(i, "ItemsYron", global_str), Int_UnPackMassive(global_str, HouseInfo[ID][hItemYron]);
+		cache_get_field_content(i, "ItemsYdacha", global_str), Int_UnPackMassive(global_str, HouseInfo[ID][hItemYdacha]);
+		cache_get_field_content(i, "ItemsMaxhp", global_str), Int_UnPackMassive(global_str, HouseInfo[ID][hItemMaxhp]);
 		cache_get_field_content(i, "objectCount", global_str), Int_UnPackMassive(global_str, HouseInfo[ID][hObjectCount]);
 		
 	    if(isnull(HouseInfo[ID][hOwner])) SetString(HouseInfo[ID][hOwner], "The State");
@@ -55199,7 +55365,7 @@ stock SaveTrunk(id)
 	return SQL("UPDATE `ownable` SET `Item` = '%s', `ItemCount` = '%s', `ItemLevel` = '%s' WHERE `ID` = '%d'", Int_PackMassive(0, TrunkInfo[id][tItem]), Int_PackMassive(1, TrunkInfo[id][tItemCount]), Int_PackMassive(2, TrunkInfo[id][tItemLevel]), CarInfo[GetVehicleID(id)][cID]);
 
 stock SaveItemHouse(houseid)
-	return SQL("UPDATE `houses` SET `Items` = '%s', `ItemsKolvo` = '%s', `ItemsLevel` = '%s', `ItemsProc` = '%s' WHERE `ID` = %d;", Int_PackMassive(0, HouseInfo[houseid][hItem]), Int_PackMassive(1, HouseInfo[houseid][hItemCount]), Int_PackMassive(2, HouseInfo[houseid][hItemLevel]), Int_PackMassive(3, HouseInfo[houseid][hItemProc]), HouseInfo[houseid][hID]);
+	return SQL("UPDATE `houses` SET `Items` = '%s', `ItemsKolvo` = '%s', `ItemsLevel` = '%s', `ItemsProc` = '%s', `ItemsZash` = '%s', `ItemsRegen` = '%s', `ItemsYron` = '%s', `ItemsYdacha` = '%s', `ItemsMaxhp` = '%s' WHERE `ID` = %d;", Int_PackMassive(0, HouseInfo[houseid][hItem]), Int_PackMassive(1, HouseInfo[houseid][hItemCount]), Int_PackMassive(2, HouseInfo[houseid][hItemLevel]), Int_PackMassive(3, HouseInfo[houseid][hItemProc]), Int_PackMassive(4, HouseInfo[houseid][hItemZash]), Int_PackMassive(5, HouseInfo[houseid][hItemRegen]), Int_PackMassive(6, HouseInfo[houseid][hItemYron]), Int_PackMassive(7, HouseInfo[houseid][hItemYdacha]), Int_PackMassive(8, HouseInfo[houseid][hItemMaxhp]), HouseInfo[houseid][hID]);
 
 
 stock GetMiningParams(level, Float:balance, Float:percent, &to_full, &time, &Float:perfect_BTC)
@@ -56651,20 +56817,39 @@ cmd:unbomb(playerid, params[])
 	}
 	return 1;
 }
+//------------------------------------------------------------------------------
+// cmd:test0(playerid, params[])
+// {
+// 	new p0;
 
-cmd:test(playerid)
-{
-	SetPlayerVirtualWorld(playerid, 3);
-	SetPlayerInterior(playerid, 3);
-	return SetPlayerPos(playerid, 2251.0037,1480.1306,1008.7613);
-}
+// 	sscanf(params, "d", p0);
+// 	printf(">>[%d]=>[%d][%d][%d][%d][%d]", p0, AksSlot[playerid][3][p0], AksSlot[playerid][4][p0], AksSlot[playerid][5][p0], AksSlot[playerid][6][p0], AksSlot[playerid][7][p0]);
+// 	return 1;
+// }
+// cmd:test1(playerid, params[])
+// {
+// 	new p0, p1, p2;
 
-cmd:test1(playerid)
-{
-	SetPlayerPos(playerid, 2265.703613, -830.926941, 1406.267456);
-	SetPlayerVirtualWorld(playerid, 3);
-	return SetPlayerInterior(playerid, 215);
-}
+// 	sscanf(params, "ddd", p0, p1, p2);
+// 	AksSlot[playerid][p0][p1] = p2;
+// 	printf(">> [%d][%d][%d]=>[%d]", p0, p1, p2, AksSlot[playerid][p0][p1]);
+// 	return 1;
+// }
+
+//------------------------------------------------------------------------------
+// cmd:test(playerid)
+// {
+// 	SetPlayerVirtualWorld(playerid, 3);
+// 	SetPlayerInterior(playerid, 3);
+// 	return SetPlayerPos(playerid, 2251.0037,1480.1306,1008.7613);
+// }
+
+// cmd:test1(playerid)
+// {
+// 	SetPlayerPos(playerid, 2265.703613, -830.926941, 1406.267456);
+// 	SetPlayerVirtualWorld(playerid, 3);
+// 	return SetPlayerInterior(playerid, 215);
+// }
 
 cmd:bomb(playerid, params[])
 {
@@ -58437,6 +58622,8 @@ CMD:setcmd(playerid, params[])
     SetCmdSettings(playerid);
     return 1;
 }
+//------------------------------------------------------------------------------
+
 //------------------------------------------------------------------------------
 cmd:makeleader(playerid, params[])
 {
@@ -71466,12 +71653,17 @@ stock PutAcc(playerid, td, ac)
     AksDel[playerid][ac] = 0;
 	
 	if AksSlot[playerid][0][ac] *then
-   		AddItem(playerid, AksSlot[playerid][0][ac], 1, AksSlot[playerid][1][ac], AksSlot[playerid][2][ac]),
+   		AddItem(playerid, AksSlot[playerid][0][ac], 1, AksSlot[playerid][1][ac], AksSlot[playerid][2][ac], AksSlot[playerid][3][ac], AksSlot[playerid][4][ac], AksSlot[playerid][5][ac], AksSlot[playerid][6][ac], AksSlot[playerid][7][ac]),
 			RemovePlayerAttachedObject(playerid, ac);
 	
 	AksSlot[playerid][0][ac] = Inventory[playerid][0][id];
 	AksSlot[playerid][1][ac] = Inventory[playerid][2][id];
 	AksSlot[playerid][2][ac] = Inventory[playerid][3][id];
+	AksSlot[playerid][3][ac] = Inventory[playerid][4][id];
+	AksSlot[playerid][4][ac] = Inventory[playerid][5][id];
+	AksSlot[playerid][5][ac] = Inventory[playerid][6][id];
+	AksSlot[playerid][6][ac] = Inventory[playerid][7][id];
+	AksSlot[playerid][7][ac] = Inventory[playerid][8][id];
 	
 	SetPlayerAccessory(playerid, AksSlot[playerid][0][ac], ac);
 	UpdateInventoryAcessory(playerid, ac);
@@ -71893,7 +72085,7 @@ stock SaveInventory(playerid)
 	if !IsPlayerOnline(playerid) *then 
 		return false;
 	
-	SQL("UPDATE `accounts` SET `Item` = '%s', `ItemKolvo` = '%s', `ItemLevel` = '%s', `ItemProc` = '%s' WHERE `ID` = '%d'", Int_PackMassive(0, Inventory[playerid][0]), Int_PackMassive(1, Inventory[playerid][1]), Int_PackMassive(2, Inventory[playerid][2]), Int_PackMassive(3, Inventory[playerid][3]), PI[playerid][pID]);
+	SQL("UPDATE `accounts` SET `Item` = '%s', `ItemKolvo` = '%s', `ItemLevel` = '%s', `ItemProc` = '%s', `ItemZash` = '%s', `ItemRegen` = '%s', `ItemYron` = '%s', `ItemYdacha` = '%s', `ItemMaxhp` = '%s' WHERE `ID` = '%d'", Int_PackMassive(0, Inventory[playerid][0]), Int_PackMassive(1, Inventory[playerid][1]), Int_PackMassive(2, Inventory[playerid][2]), Int_PackMassive(3, Inventory[playerid][3]), Int_PackMassive(4, Inventory[playerid][4]), Int_PackMassive(5, Inventory[playerid][5]), Int_PackMassive(6, Inventory[playerid][6]), Int_PackMassive(7, Inventory[playerid][7]), Int_PackMassive(8, Inventory[playerid][8]), PI[playerid][pID]);
    
     return SavePlayerAccessory(playerid);
 }
@@ -71973,7 +72165,7 @@ public: LoadRewards(playerid)
 }
 
 stock SavePlayerAccessory(playerid)
-	return SQL("UPDATE `accounts` SET `Aks` = '%s', `AksLevel` = '%s', `AksProc` = '%s' WHERE `ID` = %d;", Int_PackMassive(0, AksSlot[playerid][0]), Int_PackMassive(1, AksSlot[playerid][1]), Int_PackMassive(2, AksSlot[playerid][2]), PI[playerid][pID]);
+	return SQL("UPDATE `accounts` SET `Aks` = '%s', `AksLevel` = '%s', `AksProc` = '%s', `AksZash` = '%s', `AksRegen` = '%s', `AksYron` = '%s', `AksYdacha` = '%s', `AksMaxhp` = '%s' WHERE `ID` = %d;", Int_PackMassive(0, AksSlot[playerid][0]), Int_PackMassive(1, AksSlot[playerid][1]), Int_PackMassive(2, AksSlot[playerid][2]), Int_PackMassive(3, AksSlot[playerid][3]), Int_PackMassive(4, AksSlot[playerid][4]), Int_PackMassive(5, AksSlot[playerid][5]), Int_PackMassive(6, AksSlot[playerid][6]), Int_PackMassive(7, AksSlot[playerid][7]), PI[playerid][pID]);
 
 stock ShowInvent(playerid)
 {
@@ -73051,8 +73243,14 @@ stock getItemInfo(playerid, slot)
 	 - Цвет: %s{FFFFFF}\n\
      - Улучшения: {FDCF28}%d/12\n\
 	{FFFFFF} - Бонус от улучшения: {B08A87}[%s]\n\
-	{FFFFFF} - Прочность: {%s}%d/100\n\n\
-	{FFFFFF}* При улучшении ", ItemsInfo[item][ItemName], GetItemStory(playerid, item), GetItemColorName(item), Inventory[playerid][2][slot], item_bonus, GetColorItemProc(Inventory[playerid][3][slot]), Inventory[playerid][3][slot]);
+	{FFFFFF} - Прочность: {%s}%d\n\n\
+	{FFFFFF}Нашивка на аксессуар:\n\
+	{FFFFFF} - Защита: {B08A87}[-%d%% урона]\n\
+	{FFFFFF} - Регенерация: {B08A87}[+%d HP в мин.]\n\
+	{FFFFFF} - Урон: {B08A87}[+%d урона]\n\
+	{FFFFFF} - Удача: {B08A87}[шанс %d%% крит.урона]\n\
+	{FFFFFF} - Макс. хп: {B08A87}[+%d HP]\n\n\
+	{FFFFFF}* При улучшении ", ItemsInfo[item][ItemName], GetItemStory(playerid, item), GetItemColorName(item), Inventory[playerid][2][slot], item_bonus, GetColorItemProc(Inventory[playerid][3][slot]), Inventory[playerid][3][slot], Inventory[playerid][4][slot], Inventory[playerid][5][slot], Inventory[playerid][6][slot], Inventory[playerid][7][slot], Inventory[playerid][8][slot]);
 
 	strcat(global_str, UpdateStr);
 	
@@ -73142,7 +73340,7 @@ stock SetPlayerAccessoryWeapon(playerid, item, count = 1)
 }
 
 //
-stock AddItem(playerid, itemid, amount = 1, level = 0, proc = 100)
+stock AddItem(playerid, itemid, amount = 1, level = 0, proc = 100, zash = 0, regen = 0, yron = 0, ydacha = 0, maxhp = 0)
 {
 	if GetInvSet(playerid) >= PI[playerid][pInvCell] *then
 		return SCM(playerid, COLOR_RED, !"[Ошибка] {FFFFFF}У вас не хватает места в инвентаре!");
@@ -73202,6 +73400,11 @@ stock AddItem(playerid, itemid, amount = 1, level = 0, proc = 100)
 		Inventory[playerid][0][i] = itemid;
 		Inventory[playerid][2][i] = level;
 		Inventory[playerid][3][i] = proc;
+		Inventory[playerid][4][i] = zash;
+		Inventory[playerid][5][i] = regen;
+		Inventory[playerid][6][i] = yron;
+		Inventory[playerid][7][i] = ydacha;
+		Inventory[playerid][8][i] = maxhp;
 
 		if(ItemsInfo[itemid][ItemQuantity] > amount)
 		{
@@ -73247,7 +73450,7 @@ stock ClearItem(playerid, slot, count)
 	if count < Inventory[playerid][1][slot] *then
 		Inventory[playerid][1][slot] -= count;
 	
-	else Inventory[playerid][0][slot] = Inventory[playerid][1][slot] = Inventory[playerid][2][slot] = Inventory[playerid][3][slot] = false;
+	else Inventory[playerid][0][slot] = Inventory[playerid][1][slot] = Inventory[playerid][2][slot] = Inventory[playerid][3][slot] = Inventory[playerid][4][slot] = Inventory[playerid][5][slot] = Inventory[playerid][6][slot] = Inventory[playerid][7][slot] = Inventory[playerid][8][slot] = false;
 	
 	if shopopen{playerid} || EnchantWork{playerid} || InventoryOpen{playerid} || Int_GetPlayerData(playerid, "OtherInventOpen") *then InvSlotUpdate(playerid, GetInvID(playerid, slot, 1), slot);
 	return false;
@@ -73501,6 +73704,14 @@ cmd:giveitem(playerid, params[])
 	
 	if(GetInvSet(id) >= PI[id][pInvCell]) return SCM(playerid, COLOR_RED, !"[Ошибка] {FFFFFF}У него не хватает места в инвентаре!");
 	
+	//--------------------------------------------------------------------------
+	// Ограничение уровня нашивки
+	if(item == 2201 || item == 2202 || item == 2203 || item == 2204 || item == 2205)
+	{
+		if(zatochka > 3) return SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Нельзя выдать нашивку больше 3 уровня.");
+	}
+	//--------------------------------------------------------------------------
+			
 	AddItem(id, item, amount, zatochka);
 
 	SCMF(playerid, -1, "[/giveitem] Выдано игроку %s[ID: %d], предмет: %s[itemid: %d], количество: %dшт", PN(id), id, ItemsInfo[item][ItemName2], item, amount);
@@ -79074,7 +79285,7 @@ stock ClearPlayerData(playerid)
 	{
 		if i < 9 *then RemovePlayerAttachedObject(playerid, i);	
 		if i < 10 *then CashBack[playerid][i] = 0;
-		if i < 8 *then QuickMenu[playerid][i] = AksSlot[playerid][0][i] = AksSlot[playerid][1][i] = AksSlot[playerid][2][i] = 0;
+		if i < 8 *then QuickMenu[playerid][i] = AksSlot[playerid][0][i] = AksSlot[playerid][1][i] = AksSlot[playerid][2][i] = AksSlot[playerid][3][i] = AksSlot[playerid][4][i] = AksSlot[playerid][5][i] = AksSlot[playerid][6][i] = AksSlot[playerid][7][i] = 0;
 		if i < 5 *then PlayerFish[playerid][i] 	= 0;
 		if i < 6 *then AksVidStatus[playerid][i] = AksVid[playerid][i] = 0;
 		if i < 25 *then RewardProgress[playerid][i] = 0, RewardDone[playerid][i] = 0;
@@ -79082,7 +79293,7 @@ stock ClearPlayerData(playerid)
 		if i < 32 *then PlayerDialogList[playerid][i] = 0;
 		if i < AC_MAX_TRIGGERS *then pAntiCheatLastCodeTriggerTime[playerid][i] = -1;
 
-		Inventory[playerid][0][i] = Inventory[playerid][1][i] = Inventory[playerid][2][i] = Inventory[playerid][3][i] = GlobalMassive[playerid][i] = 0;
+		Inventory[playerid][0][i] = Inventory[playerid][1][i] = Inventory[playerid][2][i] = Inventory[playerid][3][i] = Inventory[playerid][4][i] = Inventory[playerid][5][i] = Inventory[playerid][6][i] = Inventory[playerid][7][i] = Inventory[playerid][8][i] = GlobalMassive[playerid][i] = 0;
 	}
 	
 	KillAllTimers(playerid);
@@ -79764,7 +79975,7 @@ stock DeletePlayerAccessory(playerid, id)
 {
     if(GetInvSet(playerid) >= PI[playerid][pInvCell]) return SCM(playerid, COLOR_RED, !"[Ошибка] {FFFFFF}У вас не хватает места в инвентаре!");
     PlayerPlaySound(playerid, 6801, 0.0, 0.0, 0.0);
-    AddItem(playerid, AksSlot[playerid][0][id], 1, AksSlot[playerid][1][id], AksSlot[playerid][2][id]);
+    AddItem(playerid, AksSlot[playerid][0][id], 1, AksSlot[playerid][1][id], AksSlot[playerid][2][id], AksSlot[playerid][3][id], AksSlot[playerid][4][id], AksSlot[playerid][5][id], AksSlot[playerid][6][id], AksSlot[playerid][7][id]);
 	
 	if !PlayerModification[playerid] *then 
 		RemovePlayerAttachedObject(playerid, id);
@@ -79776,8 +79987,13 @@ stock DeletePlayerAccessory(playerid, id)
 	}
 	
 	AksSlot[playerid][0][id] = 
-	AksSlot[playerid][1][id] = 
-	AksSlot[playerid][2][id] = 0;
+	AksSlot[playerid][1][id] =
+	AksSlot[playerid][2][id] =
+	AksSlot[playerid][3][id] =
+	AksSlot[playerid][4][id] =
+	AksSlot[playerid][5][id] =
+	AksSlot[playerid][6][id] = 
+	AksSlot[playerid][7][id] = 0;
 	AksDel[playerid][id] = 0;
     UpdateInventoryAcessory(playerid, id);
 	
@@ -83390,7 +83606,7 @@ stock IsValidItem(itemid)
 	return true;
 }
 
-stock AddItemTrunk(playerid, trunkid, itetrunkid, amount, level, procent)
+stock AddItemTrunk(playerid, trunkid, itetrunkid, amount, level, procent, zash = 0, regen = 0, yron = 0, ydacha = 0, maxhp = 0)
 {
 	amlf("Игрок <a href=../pages/user?id=%d>%s</a> положил в багажник %d предмет инвентаря %s (id:%d) в кол-во %d", 0, "", "", PI[playerid][pID], PN(playerid), trunkid, ItemsInfo[itetrunkid][ItemName2], itetrunkid, amount);
 	
@@ -83429,6 +83645,12 @@ stock AddItemTrunk(playerid, trunkid, itetrunkid, amount, level, procent)
 		TrunkInfo[trunkid][tItem][i] = itetrunkid;
 		TrunkInfo[trunkid][tItemLevel][i] = level;
 		TrunkInfo[trunkid][tItemProc][i] = procent;
+		TrunkInfo[trunkid][tItemZash][i] = zash;
+		TrunkInfo[trunkid][tItemRegen][i] = regen;
+		TrunkInfo[trunkid][tItemYron][i] = yron;
+		TrunkInfo[trunkid][tItemYdacha][i] = ydacha;
+		TrunkInfo[trunkid][tItemMaxhp][i] = maxhp;
+
 		if ItemsInfo[itetrunkid][ItemQuantity] > amount *then
 		{
 			TrunkInfo[trunkid][tItemCount][i] = amount;
@@ -83447,7 +83669,7 @@ stock AddItemTrunk(playerid, trunkid, itetrunkid, amount, level, procent)
 	
     return 1;
 }
-stock AddItemMusor(playerid, mid, itemid, amount, level, procent)
+stock AddItemMusor(playerid, mid, itemid, amount, level, procent, zash = 0, regen = 0, yron = 0, ydacha = 0, maxhp = 0)
 {
 	amlf("Игрок <a href=../pages/user?id=%d>%s</a> положил в мусорку %d предмет инвентаря %s (id:%d) в кол-во %d", 0, "", "", PI[playerid][pID], PN(playerid), mid, ItemsInfo[itemid][ItemName2], itemid, amount);
 	
@@ -83485,6 +83707,12 @@ stock AddItemMusor(playerid, mid, itemid, amount, level, procent)
 		MusorInfo[mid][mItem][i] = itemid;
 		MusorInfo[mid][mItemLevel][i] = level;
 		MusorInfo[mid][mItemProc][i] = procent;
+		MusorInfo[mid][mItemZash][i] = zash;
+		MusorInfo[mid][mItemRegen][i] = regen;
+		MusorInfo[mid][mItemYron][i] = yron;
+		MusorInfo[mid][mItemYdacha][i] = ydacha;
+		MusorInfo[mid][mItemMaxhp][i] = maxhp;
+
 		if ItemsInfo[itemid][ItemQuantity] > amount *then
 		{
 			MusorInfo[mid][mItemCount][i] = amount;
@@ -83503,7 +83731,7 @@ stock AddItemMusor(playerid, mid, itemid, amount, level, procent)
     return 1;
 }
 
-stock AddItemHouse(playerid, houseid, itemid, amount, level, procent)
+stock AddItemHouse(playerid, houseid, itemid, amount, level, procent, zash = 0, regen = 0, yron = 0, ydacha = 0, maxhp = 0)
 {
 	amlf("Игрок <a href=../pages/user?id=%d>%s</a> положил в шкаф %d предмет инвентаря %s (id:%d) в кол-во %d", 0, "", "", PI[playerid][pID], PN(playerid), houseid, ItemsInfo[itemid][ItemName2], itemid, amount);
 	
@@ -83541,6 +83769,12 @@ stock AddItemHouse(playerid, houseid, itemid, amount, level, procent)
 		HouseInfo[houseid][hItem][i] = itemid;
 		HouseInfo[houseid][hItemLevel][i] = level;
 		HouseInfo[houseid][hItemProc][i] = procent;
+		HouseInfo[houseid][hItemZash][i] = zash;
+		HouseInfo[houseid][hItemRegen][i] = regen;
+		HouseInfo[houseid][hItemYron][i] = yron;
+		HouseInfo[houseid][hItemYdacha][i] = ydacha;
+		HouseInfo[houseid][hItemMaxhp][i] = maxhp;
+
 		if(ItemsInfo[itemid][ItemQuantity] > amount)
 		{
 			HouseInfo[houseid][hItemCount][i] = amount;
@@ -84187,12 +84421,27 @@ stock ChangeItemPos(playerid, ID, j)
 	new item = Inventory[playerid][0][ID],
 		count = Inventory[playerid][1][ID],
 		level = Inventory[playerid][2][ID],
-		proc = Inventory[playerid][3][ID];
+		proc = Inventory[playerid][3][ID],
+		zash = Inventory[playerid][4][ID],
+		regen = Inventory[playerid][5][ID],
+		yron = Inventory[playerid][6][ID],
+		ydacha = Inventory[playerid][7][ID],
+		maxhp = Inventory[playerid][8][ID];
 
+	Inventory[playerid][8][ID] = Inventory[playerid][8][j];
+	Inventory[playerid][7][ID] = Inventory[playerid][7][j];
+	Inventory[playerid][6][ID] = Inventory[playerid][6][j];
+	Inventory[playerid][5][ID] = Inventory[playerid][5][j];
+	Inventory[playerid][4][ID] = Inventory[playerid][4][j];
 	Inventory[playerid][3][ID] = Inventory[playerid][3][j];
 	Inventory[playerid][2][ID] = Inventory[playerid][2][j];
 	Inventory[playerid][1][ID] = Inventory[playerid][1][j];
 	Inventory[playerid][0][ID] = Inventory[playerid][0][j];
+	Inventory[playerid][8][j] = maxhp;
+	Inventory[playerid][7][j] = ydacha;
+	Inventory[playerid][6][j] = yron;
+	Inventory[playerid][5][j] = regen;
+	Inventory[playerid][4][j] = zash;
 	Inventory[playerid][3][j] = proc;
 	Inventory[playerid][2][j] = level;
 	Inventory[playerid][1][j] = count;

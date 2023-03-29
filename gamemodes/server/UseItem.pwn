@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------
 // Действия предметов USE //////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
+
 public: @UseItem(playerid, td)
 {
 	global_str = "";
@@ -515,11 +516,27 @@ public: @UseItem(playerid, td)
 		case 525: callcmd::usedrugs(playerid, "");// нарко
 
 		case 2038: callcmd::drug(playerid, "");// саженец нарко
+
+		case 2201..2205: SetNashivka(playerid);
 	}
 	
 	PI[playerid][OpenGunMenu] = 0;
 	closeuse(playerid);
 	
 	return false;
+}
+//------------------------------------------------------------------------------
+stock SetNashivka(playerid)
+{
+    f(global_str, 1024, "\
+	{AFAFAF}Слот 0: %s\n\
+	{AFAFAF}Слот 1: %s\n\
+	{AFAFAF}Слот 2: %s\n\
+	{AFAFAF}Слот 3: %s\n\
+	{AFAFAF}Слот 4: %s\n\
+	{AFAFAF}Слот 5: %s\n\
+	{AFAFAF}Слот 6: %s\n\
+	{AFAFAF}Слот 7: %s", ItemsInfo[AksSlot[playerid][0][0]][ItemName2], ItemsInfo[AksSlot[playerid][0][1]][ItemName2], ItemsInfo[AksSlot[playerid][0][2]][ItemName2], ItemsInfo[AksSlot[playerid][0][3]][ItemName2], ItemsInfo[AksSlot[playerid][0][4]][ItemName2], ItemsInfo[AksSlot[playerid][0][5]][ItemName2], ItemsInfo[AksSlot[playerid][0][6]][ItemName2], ItemsInfo[AksSlot[playerid][0][7]][ItemName2]);
+	return SPD(playerid, 7001, DIALOG_STYLE_LIST, !"Выберите аксессуар:", global_str, !"Выбор", !"Отмена");
 }
 //------------------------------------------------------------------------------
