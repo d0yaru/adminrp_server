@@ -1,3 +1,6 @@
+//------------------------------------------------------------------------------
+// Защитить мод от декомпиляции. вариант от DC (Daniel_Cortez)
+// если хочешь разобраться, что и как работает, почитай о применяемых инструкциях в Pawn IMP
 @include_a_samp_();
 @include_a_samp_()
 {
@@ -19,6 +22,7 @@ L1:
 	#emit    jump    L1
 	#emit    zero    cellmin
 }
+//------------------------------------------------------------------------------
 new 
 	global_str[4097],
 	mysql_string[800],
@@ -31,7 +35,7 @@ new
 #include <a_samp>
 
 #undef MAX_PLAYERS
-#define MAX_PLAYERS 100
+#define MAX_PLAYERS 50
 #define LAUNCHER_ON (0) // 1 -вкл. лаунчер, 0 -откл. лаунчер
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 #include streamer
@@ -1085,8 +1089,10 @@ new FructsInfo[MAX_FRUCTS][fructsInfo] =
 	{true, 1929.5703,210.8682,29.0848}
 };
 
-//
+//------------------------------------------------------------------------------
+// klad 1
 
+//------------------------------------------------------------------------------
 new const Float:position_klad[][3] =
 {
 	{1227.58, -869.813, 41.5483},
@@ -11601,7 +11607,7 @@ public OnGameModeInit()
     for new i; i < STO_PLATS; i++ do
 		PlatText[i] = CreateDynamic3DTextLabel(!"Платформа {42B02C}[Свободна]{FFFFFF}\nНажмите 'H' чтобы занять",-1, PlatformaInfo[i][platX],PlatformaInfo[i][platY],PlatformaInfo[i][platZ], 6.0, INVALID_VEHICLE_ID, INVALID_PLAYER_ID);
 	
-	for new i, id; i < 30; i++ do
+	for new i, id; i < 300; i++ do
 	{
 		id = random(sizeof position_klad);
 		
@@ -56818,22 +56824,9 @@ cmd:unbomb(playerid, params[])
 	return 1;
 }
 //------------------------------------------------------------------------------
-// cmd:test0(playerid, params[])
+// cmd:test(playerid, params[])
 // {
-// 	new p0;
-
-// 	sscanf(params, "d", p0);
-// 	printf(">>[%d]=>[%d][%d][%d][%d][%d]", p0, AksSlot[playerid][3][p0], AksSlot[playerid][4][p0], AksSlot[playerid][5][p0], AksSlot[playerid][6][p0], AksSlot[playerid][7][p0]);
-// 	return 1;
-// }
-// cmd:test1(playerid, params[])
-// {
-// 	new p0, p1, p2;
-
-// 	sscanf(params, "ddd", p0, p1, p2);
-// 	AksSlot[playerid][p0][p1] = p2;
-// 	printf(">> [%d][%d][%d]=>[%d]", p0, p1, p2, AksSlot[playerid][p0][p1]);
-// 	return 1;
+// 		CreateKlad(1, position_klad[1][0], position_klad[1][1], position_klad[1][2]);
 // }
 
 //------------------------------------------------------------------------------
@@ -73703,7 +73696,7 @@ cmd:giveitem(playerid, params[])
 	if(id == INVALID_PLAYER_ID) return 0;
 	
 	if(GetInvSet(id) >= PI[id][pInvCell]) return SCM(playerid, COLOR_RED, !"[Ошибка] {FFFFFF}У него не хватает места в инвентаре!");
-	
+
 	//--------------------------------------------------------------------------
 	// Ограничение уровня нашивки
 	if(item == 2201 || item == 2202 || item == 2203 || item == 2204 || item == 2205)
@@ -79664,7 +79657,7 @@ stock PayDayOther()
 	    if(GZInfo[i][gzFracID] > 0) OrgInfo[GZInfo[i][gzFracID]][oBank] += OrgMoney[GZInfo[i][gzFracID]];
 	}
 	
-	for new i; i < 30 - Iter_Count(Klad); i++ do
+	for new i; i < 300 - Iter_Count(Klad); i++ do
 	{
 		new klad_pos = random(sizeof position_klad);
 				

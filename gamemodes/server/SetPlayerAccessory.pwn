@@ -137,8 +137,9 @@ stock SetPlayerAccessory(playerid, id, slot)
 		case 1464..1472: SetAttachToSkin(playerid, 145 - (1472 - id), skin, item, slot);
 
 		case 2039..2123: SetAttachToSkin(playerid, 230 - (2123 - id), skin, item, slot);
-		case 2124..2130: SetAttachToSkin(playerid, 231, skin, item, slot);
+		case 2124..2130: SetAttachToSkin(playerid, 231, skin, item, slot);// Магические шары
 		case 2131..2163: SetAttachToSkin(playerid, 264 - (2163 - id), skin, item, slot);
+		case 2206..2699: SetAttachToSkin(playerid, 758 - (2699 - id), skin, item, slot);
 
 	}
 
@@ -164,7 +165,7 @@ stock GetAccessoryItemPos(item)
 /*8*/	case 341,415,605,1457: return 7;
 /*6*/	case 2108,2119,1440,1162..1171,684,685,334,336,337,338,339,594,593,595,604,596,597,598,599,600,601,602,614,348,354,355,357,358,359,369,397,395,394,393,401..405,413,420,421,423,509,510,511,424,543,542,584,585,586,352,361,582,620..646,656..664,970,980,1132..1155,1156,1160, 1438, 1448..1456,1458,1462,1463: return 5;
 /*7*/	case 499..508,1125: return 6;
-/*2*/	case 2078,2138,392,406,1158,463..480,674..681,537,408,340,343..345,1442: return 1;
+/*2*/	case 2677,2078,2138,392,406,1158,463..480,674..681,537,408,340,343..345,1442: return 1;
 	}
 	return 3;/*4*/
 }
