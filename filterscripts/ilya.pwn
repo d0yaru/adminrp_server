@@ -1733,8 +1733,8 @@ public: PiarTextToAll()
 	SendClientMessageToAll(-1, "===================== [ {eb5252}AdminRP Information{FFFFFF} ] =====================");
 	SendClientMessageToAll(-1, "\t\t\tIP сервера: 176.32.39.22:7777");
 	SendClientMessageToAll(-1, "\t\t\tСайт проекта: adminrp.ru");
-	SendClientMessageToAll(-1, "\t\t\tФорум: forum.adminrp.ru");
-	SendClientMessageToAll(-1, "\t\t\tГруппа VK: vk.com/samp51");
+	SendClientMessageToAll(-1, "\t\t\tЛаунчер PC: adminrp.ru/launcher/AdminRP.exe");
+	SendClientMessageToAll(-1, "\t\t\tЛаунчер Mobile: adminrp.ru/launcher/AdminRP.apk");
 	SendClientMessageToAll(-1, "\t\t\tDiscord: discord.gg/tKXJrgHttX");
 	SendClientMessageToAll(-1, "===================== [ {eb5252}AdminRP Information{FFFFFF} ] =====================");
 }
@@ -9700,7 +9700,7 @@ public: AttachPlayerITEM(playerid, type, skinid, setobject, slot, coloritem)
 	else if type == 734 *then SetPlayerAttachedObject(playerid, slot, 15952, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
 	else if type == 735 *then SetPlayerAttachedObject(playerid, slot, 15953, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
 	else if type == 736 *then SetPlayerAttachedObject(playerid, slot, 15954, 2, 0.456999, 0.000000, 0.004999, 35.299945, -94.199974, -9.999992, 1.000000, 1.000000, 1.000000, 0, 0);
-	else if type == 737 *then SetPlayerAttachedObject(playerid, slot, 15955, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 737 *then SetPlayerAttachedObject(playerid, slot, 15955, 1, 0.000000, 0.000000, 0.000000, 0.000000, -87.299995, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
 	else if type == 738 *then SetPlayerAttachedObject(playerid, slot, 15956, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
 	else if type == 739 *then SetPlayerAttachedObject(playerid, slot, 15957, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
 	else if type == 740 *then SetPlayerAttachedObject(playerid, slot, 15958, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
@@ -9711,7 +9711,7 @@ public: AttachPlayerITEM(playerid, type, skinid, setobject, slot, coloritem)
 	else if type == 745 *then SetPlayerAttachedObject(playerid, slot, 16878, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
 	else if type == 746 *then SetPlayerAttachedObject(playerid, slot, 16858, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
 	else if type == 747 *then SetPlayerAttachedObject(playerid, slot, 16933, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
-	else if type == 748 *then SetPlayerAttachedObject(playerid, slot, 16934, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	else if type == 748 *then SetPlayerAttachedObject(playerid, slot, 16934, 1, 0.654999, 0.000000, 0.000000, 0.000000, 85.500007, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
 	else if type == 749 *then SetPlayerAttachedObject(playerid, slot, 16935, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
 	else if type == 750 *then SetPlayerAttachedObject(playerid, slot, 16936, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
 	else if type == 751 *then SetPlayerAttachedObject(playerid, slot, 16937, 1, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);

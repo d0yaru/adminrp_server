@@ -5621,6 +5621,8 @@ new TempMusorMusor[MAX_MUSORS] = {-1, ...};
 new MusorovozPlayer[MAX_VEHICLES] = {INVALID_PLAYER_ID, ...};
 new CarMusorCount[MAX_VEHICLES];
 
+new CarScrap[MAX_VEHICLES] = {-1,...};
+
 const MAX_PRODUCTS_CARS = 13;
 new CarproductCount[MAX_PRODUCTS_CARS],
 	CarproductType[MAX_PRODUCTS_CARS],
@@ -16023,6 +16025,40 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 			}
 	    }
 	}
+	//--------------------------------------------------------------------------
+	else if(checkpointid == ScrapCP)
+	{
+	    if(PlayerJob[playerid] == JOB_SCRAPER)
+	    {
+	        if(IsPlayerInAnyVehicle(playerid))
+	        {
+				new money = GLS[10];
+	        	new carid = GetPlayerVehicleID(playerid);
+				if(GetVehicleModelEx(carid) == 443 && VehicleInfo[carid][vJob] == JOB_SCRAPER)
+				{
+		        	if(CarScrap[carid] != -1)
+		        	{
+		        	    if(GetPVarInt(playerid,"metal")>gettime())return SCM(playerid, COLOR_RED, !"Вы были кикнуты за использование читов!"),Kick(playerid);
+		        	    SetPVarInt(playerid,"metal",gettime()+150);
+						GiveMoney(playerid,money);
+						//aml(51, playerid, "", "доставленый металлолом", money);
+						f(global_str, 150, "[Информация] {FFFFFF}Вы получили {73B461}$%i{FFFFFF} за доставленый металлолом.", money);
+						SCM(playerid, -1, global_str);
+						DestroyDynamicObject(CarScrap[carid]);
+						CarScrap[carid] = -1;
+						TogglePlayerDynamicCP(playerid, ScrapCP, false);
+						FactoryFerum += 800;
+						RemovePlayerMapIcon(playerid, 98);
+      					f(global_str, 150, "{FFFFFF}Металла: {10F441}%iкг\n{FFFFFF}Материалов: {10F441}%i\n\n{FFFFFF}Встаньте на чекпоинт чтобы купить материалы", FactoryFerum, FactoryMats);
+						UpdateDynamic3DTextLabelText(FactoryText[0], -1, global_str);
+					}
+				}
+				else SCM(playerid, COLOR_RED, !"[Ошибка] {FFFFFF}Вы должны быть в эвакуаторе");
+			}
+	    }
+	    else SCM(playerid, COLOR_RED, !"[Ошибка] {FFFFFF}Вы не развозчик металлолома");
+	}
+	//--------------------------------------------------------------------------
 	if(checkpointid >= MinerCP[0] && checkpointid <= MinerCP[3])
 	{
 	    if(PlayerJob[playerid] == 17)
@@ -20112,12 +20148,40 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 /* 		else if(PlayerJob[playerid]==3 && VehicleInfo[GetPlayerVehicleID(playerid)][vJob]==3 &&IsPlayerInRangeOfPoint(playerid, 6.0, 1976.6340,-2029.4700,13.5469))
 			return SPD(playerid,2291,2,"","{42B02C}-{FFFFFF} Закупить груз\n{42B02C}-{FFFFFF} Вернуть груз", !"Принять", !"Отмена");
-  */  			
+  */  	//----------------------------------------------------------------------		
 		else if(IsPlayerInRangeOfPoint(playerid, 5.0, 2224.5222,-2461.0154,13.4466) || IsPlayerInRangeOfPoint(playerid, 5.0, 1124.2776,1962.4742,10.8203))
 		{
-			if(PlayerJob[playerid] != JOB_SCRAPER) SCM(playerid, COLOR_GREY, !"[Ошибка] {FFFFFF}Вы не развозчик металлолома");
+			//if(PlayerJob[playerid] != JOB_SCRAPER) SCM(playerid, COLOR_GREY, !"[Ошибка] {FFFFFF}Вы не развозчик металлолома");
 			//nothingstock(0);
+			if(PlayerJob[playerid] == JOB_SCRAPER)
+		    {
+		        if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == 2)
+		        {
+		        	new carid = GetPlayerVehicleID(playerid);
+					if(VehicleInfo[carid][vJob] == JOB_SCRAPER)
+					{
+			        	if(CarScrap[carid] == -1)
+			        	{
+						    DestroyDynamicObject(CarScrap[carid]);
+							CarScrap[carid] = CreateDynamicObject(3594, 0, 0, 0, 0, 0, 0);
+							AttachDynamicObjectToVehicle(CarScrap[carid], carid, 0, -2, 1.4, -15, 0, 183);
+							TogglePlayerDynamicCP(playerid, ScrapCP, true);
+							//Streamer_Update(playerid);
+							SPD(playerid, 0, 0, "Перевозка металлолома", "{FFFFFF}Едьте на фабрику по переработке маталлолома.\nОна отмечена на карте красным маркером или используйте:\n{B2D63B}/gps - Работы для начинающих - Завод", "Ок", "");
+							SetPVarInt(playerid,"metal",gettime()+150);
+						}
+						else
+						{
+							SPD(playerid, 0, 0, "Перевозка металлолома", "{FFFFFF}Едьте на фабрику по переработке маталлолома.\nОна отмечена на карте красным маркером или используйте:\n{B2D63B}/gps - Работы для начинающих - Завод", "Ок", "");
+							TogglePlayerDynamicCP(playerid, ScrapCP, true);
+						}
+						return 1;
+					}
+				}
+		    }
+		    else SCM(playerid, COLOR_RED, !"[Ошибка] {FFFFFF}Вы не развозчик металлолома");
 		}
+		//----------------------------------------------------------------------
 		else if(IsPlayerInRangeOfPoint(playerid, 2.0, -2052.71, -106.53, 35.06))
         {
     		new vehid = GetPlayerVehicleID(playerid);
@@ -21078,7 +21142,8 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			else SPD(playerid,662,0,"Работа 'Механик'","{FFFFFF}Вы хотите переодеться чтобы завершить работу?","Да","Нет");
 			return true;
 		}
-		else if(IsPlayerInRangeOfPoint(playerid, 1.0, 33.8607,2232.1184,1501.6503 ))
+		//else if(IsPlayerInRangeOfPoint(playerid, 1.0, 33.8607,2232.1184,1501.6503 ))
+		else if(IsPlayerInRangeOfPoint(playerid, 1.0, 2299.9988,-816.9280,1407.1273 ))
 	 	{
    			new hour,minuite,second;
 		    gettime(hour,minuite,second);
@@ -69603,8 +69668,69 @@ stock LoadVehicles()
 	CreateJobVehicle(JOB_PIZZA,448, 1751.2262,2224.5493,10.4200,87.7106, 3, 3,  RES_CAR_TIME);
 	CreateJobVehicle(JOB_PIZZA,448, 1751.2468,2220.2297,10.4206,90.0917, 3, 3,  RES_CAR_TIME);
 	CreateJobVehicle(JOB_PIZZA,448, 1751.6473,2218.6179,10.4188,93.0859, 3, 3,  RES_CAR_TIME);
+	// JOB_NALOG
+	CreateJobVehicle(JOB_NALOG,498, 1520.5752, -1044.9807, 23.6544, 245.0000, 6,1,RES_CAR_TIME);
+	CreateJobVehicle(JOB_NALOG,498, 1508.4005, -1041.8052, 23.4839, 263.8714, 6,1,RES_CAR_TIME);
+	// JOB_SCRAPER
+	CreateJobVehicle(JOB_SCRAPER,443, 2463.4534, -2627.4004, 13.9394, 269.3257,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_SCRAPER,443, 2463.4180, -2617.3396, 13.9394, 269.3257,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_SCRAPER,443, 2463.4636, -2606.5388, 13.9394, 269.3257,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_SCRAPER,443, 2463.4990, -2596.2339, 13.9394, 269.3257,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_SCRAPER,443, 2463.5344, -2586.1101, 13.9394, 269.3257,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_SCRAPER,443, 2463.4807, -2565.0964, 13.9394, 269.3257,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_SCRAPER,443, 2463.4768, -2575.5710, 13.9394, 269.3257,0,0,RES_CAR_TIME);
+    CreateJobVehicle(JOB_SCRAPER,443, 1052.9906, 1920.8795, 11.3154, 360.0000,0,0,RES_CAR_TIME);
+    CreateJobVehicle(JOB_SCRAPER,443, 1060.4225, 1920.7687, 11.3154, 360.0000,0,0,RES_CAR_TIME);
+    CreateJobVehicle(JOB_SCRAPER,443, 1067.7998, 1920.8162, 11.3154, 360.0000,0,0,RES_CAR_TIME);
+    CreateJobVehicle(JOB_SCRAPER,443, 1076.7444, 1921.1068, 11.3154, 360.0000,0,0,RES_CAR_TIME);
+    CreateJobVehicle(JOB_SCRAPER,443, 1082.6561, 1920.6902, 11.3154, 360.0000,0,0,RES_CAR_TIME);
+    CreateJobVehicle(JOB_SCRAPER,443, 1091.5621, 1920.9321, 11.3154, 360.0000,0,0,RES_CAR_TIME);
+	//JOB_COLLECTOR
+	CreateJobVehicle(JOB_COLLECTOR,428, 1362.7135, -1635.4933, 13.3804, 270.0000,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_COLLECTOR,428, 1362.9839, -1643.3324, 13.3804, 270.0000,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_COLLECTOR,428, 1362.9490, -1651.0912, 13.3804, 270.0000,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_COLLECTOR,428, 1362.8265, -1658.9108, 13.3804, 270.0000,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_COLLECTOR,428, 2412.0967, 2315.1018, 10.7409, 270.0538,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_COLLECTOR,428, 2412.1970, 2319.7830, 10.7409, 270.0538,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_COLLECTOR,428, 2412.2061, 2324.8198, 10.7409, 270.0538,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_COLLECTOR,428, 2412.3059, 2329.8906, 10.7409, 270.0538,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_COLLECTOR,428, 2412.2432, 2335.1106, 10.7409, 270.0538,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_COLLECTOR,428, -1707.7457,750.2225,24.7211,0.3466,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_COLLECTOR,428, -1707.7557,762.7996,24.8649,1.7362,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_COLLECTOR,428, -1708.4148,799.6246,24.8614,359.9829,0,0,RES_CAR_TIME);
+	// JOB_MECHANIC
+	new meccar = CreateJobVehicle(JOB_MECHANIC,525, 1132.5924, -1671.2059, 13.6245, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 1132.6256, -1675.8069, 13.6245, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 1132.5924, -1680.9872, 13.6245, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 1132.5658, -1686.3081, 13.6245, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 1132.5170, -1691.8745, 13.6245, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 1132.5253, -1696.5049, 13.6245, 270.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 1963.6002, 2170.7954, 10.6195, 90.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 1963.5939, 2162.4075, 10.6195, 90.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 1963.7297, 2154.1882, 10.6195, 90.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 1963.7506, 2145.8806, 10.6195, 90.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 195.1307, -251.7032, 1.3935, 180.0000,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 199.8307, -251.6695, 1.3935, 180.0000,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 204.5920, -251.6786, 1.3935, 180.0000,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 209.5022, -251.6661, 1.3935, 180.0000,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525,  2115.7346, 920.3560, 10.5940, 360.0000,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 2112.1680, 920.3069, 10.5940, 360.0000,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, 2122.3782, 920.3223, 10.5940, 360.0000,0,0,RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, -2265.8577, 185.1595, 35.0016, 90.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, -2265.7842, 188.8805, 35.0016, 90.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, -2265.6499, 192.6978, 35.0016, 90.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, -2265.5996, 204.5557, 35.0016, 90.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, -2265.6047, 196.6815, 35.0016, 90.0000, 6, 6, RES_CAR_TIME);
+	CreateJobVehicle(JOB_MECHANIC,525, -2265.6130, 212.5199, 35.0016, 90.0000, 6, 6, RES_CAR_TIME);
+	new meccar2 = CreateJobVehicle(JOB_MECHANIC,525, 2105.6604, 920.3301, 10.5940, 360.0000,0,0,RES_CAR_TIME);
+
+	for(new i = meccar; i <= meccar2; i ++)
+	{
+		f(global_str, 100, "{57B22C}Заправка %.1f$\n{FFFFFF}Бензина: %i/1000",BenzinCena[i],BenzinCount[i]);
+		Benzin[i] = CreateDynamic3DTextLabel(global_str, 0xFFFFFFFF, 0, 0, 0+2, 15.0, INVALID_PLAYER_ID, i);
+	}
 	//--------------------------------------------------------------------------
-	// Такси
+	// JOB_TAXI
 	//--------------------------------------------------------------------------
 	new taxicar1 = CreateJobVehicle(JOB_TAXI, 420, 1063.50, -1763.90, 13.19, 270, 6, 6, RES_CAR_TIME);
 
@@ -69662,6 +69788,42 @@ stock LoadVehicles()
 		TaxiText[i] = CreateDynamic3DTextLabel("<< Такси для аренды >>",COLOR_GOLD,0,0,1.4,20.0,INVALID_PLAYER_ID,i);
 		CreateTaxiAttach(i);
 	}
+	//--------------------------------------------------------------------------
+	// Автобусы
+	new avtobcar = CreateJobVehicle(1,437, 1277.0647, -1805.6693, 13.3232, 90.0000,43,1,RES_CAR_TIME);
+	// LS
+	CreateJobVehicle(1,437, 1277.0647, -1796.3993, 13.3332, 90.0000,43,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 1277.0647, -1810.6693, 13.3332, 90.0000,43,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 1277.0647, -1815.6693, 13.3332, 90.0000,43,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 1277.0647, -1825.6693, 13.3332, 90.0000,43,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 1277.0647, -1830.6693, 13.3332, 90.0000,43,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 1277.0647, -1835.6693, 13.3332, 90.0000,43,1,RES_CAR_TIME);
+
+    CreateJobVehicle(1,437, 1200.7920, -1829.0747, 13.3332, 270.0000,43,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 1200.7728, -1834.2271, 13.3332, 270.0000,43,1,RES_CAR_TIME);
+	// LV
+	CreateJobVehicle(1,437, 2794.7163, 1292.5970, 10.7482, 180.0000,6,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 2788.2739, 1292.6022, 10.7482, 180.0000,6,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 2785.1704, 1292.6265, 10.7482, 180.0000,6,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 2778.5483, 1292.5355, 10.7482, 180.0000,6,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 2775.5710, 1292.6011, 10.7482, 180.0000,6,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 2767.6765, 1281.5607, 10.7482, 270.0000,6,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 2767.6912, 1278.4785, 10.7482, 270.0000,6,1,RES_CAR_TIME);
+    CreateJobVehicle(1,437, 2767.7268, 1271.9985, 10.7482, 270.0000,6,1,RES_CAR_TIME);
+	// SF
+    CreateJobVehicle(1,437, -2159.3274, 303.4340, 35.0653, 180.1683,1,6,RES_CAR_TIME);
+    CreateJobVehicle(1,437, -2167.1770, 303.3369, 35.0653, 180.1683,1,6,RES_CAR_TIME);
+    CreateJobVehicle(1,437, -2163.0901, 303.3921, 35.0653, 180.1683,1,6,RES_CAR_TIME);
+    CreateJobVehicle(1,437, -2175.4285, 303.3306, 35.0653, 180.1683,1,6,RES_CAR_TIME);
+    CreateJobVehicle(1,437, -2179.9001, 303.2414, 35.0653, 180.1683,1,6,RES_CAR_TIME);
+    CreateJobVehicle(1,437, -2210.0623, 296.2733, 35.0653, 360.0000,1,6,RES_CAR_TIME);
+    CreateJobVehicle(1,437, -2214.1479, 296.2141, 35.0653, 360.0000,1,6,RES_CAR_TIME);
+    CreateJobVehicle(1,437, -2222.5984, 296.1785, 35.0653, 360.0000,1,6,RES_CAR_TIME);
+    CreateJobVehicle(1,437, -2226.8101, 296.1526, 35.0653, 360.0000,1,6,RES_CAR_TIME);
+    CreateJobVehicle(1,437, -2235.4680, 296.1688, 35.0653, 360.0000,1,6,RES_CAR_TIME);
+
+	new avtobcar2 = CreateJobVehicle(1,437, 2767.7498, 1268.8586, 10.7482, 270.0000,6,1,RES_CAR_TIME);
+	for(new i = avtobcar; i <= avtobcar2; i ++) AutobCarText[i] = CreateDynamic3DTextLabel("{E06C1F}Автобус\n{73B461}[Для аренды]", 0xFFFFFFFF, 0, 0, 0+2, 15.0, INVALID_PLAYER_ID, i);
 	//--------------------------------------------------------------------------
 	// грузовики на заводе
 	CreateJobVehicle(JOB_TRUCKER,514,-243.60000610352,-214.39999389648,2.0999999046326,250.0,-1,-1,RES_CAR_TIME);
@@ -69982,7 +70144,11 @@ stock LoadOther()
     portpick[2] = CreatePickup(1559,1,2051.4802,-1958.2751,14.3989,-1);
     portpick[3] = CreatePickup(1559,1,2024.5681,-1958.1749,14.3989,-1);
     portpick[4] = CreatePickup(1559,1,2015.6310,-1958.1852,14.3989,-1);
-	
+	//--------------------------------------------------------------------------
+	// Раздевалка крупье
+	CreatePickup(1550,23,2299.9988,-816.9280,1407.1273,-1);
+    CreateDynamic3DTextLabel("Зарплата\n{FFFFFF}ALT",COLOR_ORANGE,2299.9988,-816.9280,1407.1273,8.0);
+	//--------------------------------------------------------------------------
 	// ларьки пикапы и актерe
 
 	ShopEatPick[0] = CreateDynamicPickup(2663,23,1771.0034,-1902.5177,13.5557, 0, 0);
