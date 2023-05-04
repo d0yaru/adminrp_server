@@ -39468,7 +39468,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		            }
 		            case 2: callcmd::drink(playerid);
 					case 3: OtherInvOpen(playerid, 1, HouseEntered[playerid]);
-					
 					case 5:
 						return spdList(playerid, 0, 0), SPDF(playerid, 2434, DIALOG_STYLE_LIST, !"Предметы недвижимости", "{FFFFFF}Предметы на улице:\t\tустановлено %d из %d\nПредметы в интерьере:\tустановлено %d из %d\n", !"Выбрать", !"Назад", GetCountUsedObj(house), HouseInfo[house][hObjectCount][0], GetCountUsedObj(house, 0, 1), HouseInfo[house][hObjectCount][1]);
 						
@@ -57507,6 +57506,13 @@ cmd:addhouse(playerid, params[])
         return 1;
     }
 	if(!(1 <= params[0] <= 6)) return SCM(playerid, COLOR_OLDRED, !"ID класса от 1 до 6");
+	//--
+	if !(1000 <= PI[playerid][pVirMoney]) *then 
+		return SCM(playerid, COLOR_RED,!"[Ошибка]{FFFFFF} У вас недостаточно AZ-coins.");
+	
+	GiveDonate(playerid, -1000);
+	SCM(playerid, COLOR_RED, !"[Подсказка]{FFFFFF} Вы использовали команду за 1000 AZ-coin.");
+	//--
 	new ID = OWNABLEHOUSES;
     if(ID+1 > MAX_HOUSES) return SCM(playerid, COLOR_OLDRED, !"House dont suc add, because house int the bigest");
 	GetPlayerPos(playerid, HouseInfo[ID][hEnter_X], HouseInfo[ID][hEnter_Y], HouseInfo[ID][hEnter_Z]);
@@ -60251,6 +60257,9 @@ cmd:setskin(playerid, params[])
 	//
 	return amlf("Администратор <a href=../pages/user?name=%s>%s</a> установил %s скин %d игроку <a href=../pages/user?name=%s>%s</a>.", 5, "","", PN(playerid), PN(playerid), oll ? "вечный":"временный", skin, PN(id), PN(id));
 }
+
+cmd:givemoney(playerid, params[]) return SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Используйте /pay, для передачи своих денег.");
+/*
 cmd:givemoney(playerid, params[])
 {
     if !PI[playerid][pGivemoney] *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
@@ -60268,7 +60277,7 @@ cmd:givemoney(playerid, params[])
 	GiveMoney(id, money);
 	return SCMF(playerid, -1, "Вы дали игроку %s $%d", PN(id), money);
 }
-
+*/
 cmd:id(playerid, params[])
 {
     new targetid;
@@ -62685,15 +62694,17 @@ cmd:setstat(playerid, params[])
 	    }
 	    case 13:
 	    {
-	        f(global_str,150,"Вы изменили счет в банке игрока %s(%d) на %d",PN(id),id,param2);
-			SCM(playerid,-1,global_str);
-			PI[id][pBank] = param2;
+			SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Используйте /pay, для передачи своих денег.");
+	        // f(global_str,150,"Вы изменили счет в банке игрока %s(%d) на %d",PN(id),id,param2);
+			// SCM(playerid,-1,global_str);
+			// PI[id][pBank] = param2;
 	    }
 	    case 14:
 	    {
-	        f(global_str,150,"Вы изменили Donate счет игрока %s(%d) на %d",PN(id),id,param2);
-			SCM(playerid,-1,global_str);
-			PI[id][pVirMoney] = param2;
+			SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Используйте /givemydonate, для передачи своего доната.");
+	        // f(global_str,150,"Вы изменили Donate счет игрока %s(%d) на %d",PN(id),id,param2);
+			// SCM(playerid,-1,global_str);
+			// PI[id][pVirMoney] = param2;
 	    }
 	    case 15:
 	    {
@@ -73615,6 +73626,8 @@ stock ClearItem(playerid, slot, count)
 	return false;
 }
 
+cmd:addbiletall(playerid, params[]) return SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Команда /addbiletall отключена.");
+/*
 cmd:addbiletall(playerid, params[]) {
 
 	if !IsOsnovatel(playerid, 1) *then
@@ -73639,7 +73652,9 @@ cmd:addbiletall(playerid, params[]) {
 
 	return true;
 }
-
+*/
+cmd:giverub(playerid, params[]) return SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Используйте /givemyrub, для передачи своих AZ-Rub.");
+/*
 cmd:giverub(playerid, data[])
 {
 	if !IsOsnovatel(playerid, 1) *then
@@ -73657,6 +73672,7 @@ cmd:giverub(playerid, data[])
 
 	return amlf("Администратор <a href=../pages/user?id=%d>%s</a> выдал %d AZ-RUB игроку <a href=../pages/user?id=%d>%s</a>", 5, "", "", PI[playerid][pID], PlayerName[playerid], count, PI[targetId][pID], PlayerName[targetId]);
 }
+*/
 /*
 cmd:giveazruball(playerid, params[]) {
 
@@ -73683,6 +73699,8 @@ cmd:giveazruball(playerid, params[]) {
 	return true;
 }
 */
+cmd:bonusall(playerid, params[]) return SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Команда /bonusall отключена.");
+/*
 cmd:bonusall(playerid, params[])
 {
 	if !CheckAdm(playerid, 7) *then return false;
@@ -73704,6 +73722,7 @@ cmd:bonusall(playerid, params[])
 
 	return true;
 }
+*/
 //------------------------------------------------------------------------------
 cmd:givemyrub(playerid, params[])
 {
@@ -73791,6 +73810,8 @@ stock SletMenu(playerid, dId = 0)
 	return SPD(playerid, dId, DIALOG_STYLE_TABLIST_HEADERS, !"{FFFFFF}Автоматический слет | {ae433d}Arizona RP Supreme", global_str, dId ? !"Параметры":!"Выйти", dId ? !"Выйти":!"");
 }
 
+cmd:givedonateall(playerid, params[]) return SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Команда /givedonateall отключена.");
+/*
 cmd:givedonateall(playerid, params[])
 {
 	extract params -> new count; else
@@ -73812,7 +73833,9 @@ cmd:givedonateall(playerid, params[])
 	
 	return Int_SetPlayerData(playerid, "NakazLastTime", Global_Time);
 }
-
+*/
+cmd:additemall(playerid, params[]) return SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Команда /additemall отключена.");
+/*
 cmd:additemall(playerid, params[])
 {
 	if(sscanf(params,"dd",params[0],params[1])) return SCM(playerid,COLOR_OLDRED, "Используйте: /additemall [id предмета] [кол-во]");
@@ -73833,6 +73856,7 @@ cmd:additemall(playerid, params[])
 
 	return Int_SetPlayerData(playerid, "NakazLastTime", Global_Time);
 }
+*/
 
 cmd:giveitem(playerid, params[])
 {
@@ -73870,7 +73894,13 @@ cmd:giveitem(playerid, params[])
 		if(zatochka > 3) return SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Нельзя выдать нашивку больше 3 уровня.");
 	}
 	//--------------------------------------------------------------------------
-			
+	//--
+	if !(1000 <= PI[playerid][pVirMoney]) *then 
+		return SCM(playerid, COLOR_RED,!"[Ошибка]{FFFFFF} У вас недостаточно AZ-coins.");
+	
+	GiveDonate(playerid, -1000);
+	SCM(playerid, COLOR_RED, !"[Подсказка]{FFFFFF} Вы использовали команду за 1000 AZ-coin.");
+	//--
 	AddItem(id, item, amount, zatochka);
 
 	SCMF(playerid, -1, "[/giveitem] Выдано игроку %s[ID: %d], предмет: %s[itemid: %d], количество: %dшт", PN(id), id, ItemsInfo[item][ItemName2], item, amount);
@@ -73883,6 +73913,7 @@ cmd:giveitem(playerid, params[])
 	
 	return amlf("Администратор <a href=../pages/user?name=%s>%s</a> выдал игроку <a href=../pages/user?name=%s>%s</a> предмет %s. Кол-во: %d", 5, "", "", PN(playerid), PN(playerid), PN(id), PN(id), ItemsInfo[item][ItemName2], amount);
 }
+
 
 stock onboard(playerid)
 {
@@ -76450,6 +76481,13 @@ cmd:addbiz(playerid)
     if !PI[playerid][pAddbiz] *then return SCM(playerid, COLOR_OLDRED, !"[Ошибка] {cccccc}У вас нет доступа к этой команде.");
     
 	//if !IsOsnovatel(playerid) *then return 0;
+	//--
+	if !(1000 <= PI[playerid][pVirMoney]) *then 
+		return SCM(playerid, COLOR_RED,!"[Ошибка]{FFFFFF} У вас недостаточно AZ-coins.");
+	
+	GiveDonate(playerid, -1000);
+	SCM(playerid, COLOR_RED, !"[Подсказка]{FFFFFF} Вы использовали команду за 1000 AZ-coin.");
+	//--
     return SPD(playerid, 9321, DIALOG_STYLE_LIST, "Выберите тип бизнеса", "\
     Магазин 24/7\n\
     Закусочная \n\
@@ -76478,6 +76516,7 @@ cmd:addbiz(playerid)
 	Авто Сервис", !"Выбрать", !"Отмена");
 }
 
+
 cmd:addcar(playerid, data[])
 {
     if !IsOsnovatel(playerid) *then 
@@ -76487,7 +76526,13 @@ cmd:addcar(playerid, data[])
 		return SCM(playerid, COLOR_OLDRED, !"Используйте: /addcar [carid]");
 	
 	if !ValidVehicleModel(car) or (car > 611 && !IsOsnovatel(playerid)) *then return SCM(playerid, COLOR_VALIK, !"Неверный номер транспортного средства!");
+	//--
+	if !(1000 <= PI[playerid][pVirMoney]) *then 
+		return SCM(playerid, COLOR_RED,!"[Ошибка]{FFFFFF} У вас недостаточно AZ-coins.");
 	
+	GiveDonate(playerid, -1000);
+	SCM(playerid, COLOR_RED, !"[Подсказка]{FFFFFF} Вы использовали команду за 1000 AZ-coin.");
+	//--
 	new id = AddOwnableCar(playerid, car, "The State");
 	
 	if !(id == -1) *then
@@ -77998,6 +78043,7 @@ cmd:trunk(playerid, params[])
 	trunk[playerid] = vehicleid;
 	return OtherInvOpen(playerid, 3, vehicleid);
 }
+
 cmd:tet(playerid)
 {
 	if GetPlayerInterior(playerid) || GetPlayerVirtualWorld(playerid) *then return false;
@@ -78021,6 +78067,7 @@ cmd:tet(playerid)
 	}
 	return true;
 }
+
 stock UpdateDonateMenu(playerid, free, one, two)
 {
 	//
@@ -80890,6 +80937,7 @@ cmd:givemydonate(playerid, params[])
 
 cmd:givedonate(playerid, data[])
 {
+	/*
 	if !IsOsnovatel(playerid, 1) *then
 		return false;
 
@@ -80907,10 +80955,14 @@ cmd:givedonate(playerid, data[])
 	SAMF(COLOR_OLDRED, "Администратор %s[%d] выдал %d AZ-coins игроку %s[%d] !", PlayerName[playerid], playerid, count, PlayerName[targetId], targetId);
 
 	return amlf("Администратор <a href=../pages/user?id=%d>%s</a> выдал %d AZ-coins игроку <a href=../pages/user?id=%d>%s</a>", 5, "", "", PI[playerid][pID], PlayerName[playerid], count, PI[targetId][pID], PlayerName[targetId]);
+	*/
+	return SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Используйте /givemydonate, для передачи своего donate.");
 }
+
 
 cmd:ungivedonate(playerid, params[])
 {
+	/*
    	extract params -> new player:targetid, money; else
 		return SCM(playerid, COLOR_OLDRED, !"Используйте: /ungivedonate [targetid] [количество]");
 
@@ -80932,6 +80984,8 @@ cmd:ungivedonate(playerid, params[])
 	SCMF(playerid, COLOR_VALIK, "[Подсказка]{FFFFFF} Вы успешно забрали %d доната у игрока %s[%d]!", money, PN(targetid), targetid);
 
 	return SAMF(COLOR_VALIK, "[A] %s[%d] забрал %d доната у игрока %s[%d]", PN(playerid), playerid, money, PN(targetid), targetid);
+	*/
+	return SCM(playerid, COLOR_RED, !"[Ошибка]{FFFFFF} Игрок сам должен передать вам donate.");
 }
 
 stock UpdateRoul(playerid)
@@ -87472,18 +87526,18 @@ stock ArizonaMobileUnRentCar(mobileId, reason[] = "disconnect")
 
 	return true;
 }
-
+//------------------------------------------------------------------------------
 stock IsItemValidGiven(itemId)
 {
 	switch itemId do
 	{
-		case 335, 1503, 1504:
+		case 335, 1503, 1504, 615, 1461:
 			return false;
 	}
 
 	return true;
 }
-
+//------------------------------------------------------------------------------
 cmd:bilet(playerid)
 {
 	f(global_str, 1536, "\
